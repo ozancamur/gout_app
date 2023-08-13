@@ -38,6 +38,7 @@ dependencies:
   firebase_core: ^2.15.0
   get: ^4.6.5
   cloud_firestore: ^4.8.4
+  firebase_auth: ^4.7.2
 
 dev_dependencies:
   flutter_test:
@@ -78,9 +79,10 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Rubik
+    - family: Poppins
       fonts:
-        - asset: fonts/Rubik-Regular.ttf
+        - asset:  fonts/Poppins-Medium.ttf
+        #- asset: fonts/Poppins-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

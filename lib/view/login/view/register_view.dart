@@ -1,44 +1,48 @@
-// ignore_for_file: camel_case_types
+// ignore_for_file: camel_case_types, must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/appbar/gout_appbar.dart';
+import 'package:gout_app/core/widgets/appbar/gout_appbar.dart';
 import 'package:gout_app/core/constant/color_constants.dart';
-import 'package:gout_app/view/login/view/login_view.dart';
+import 'package:gout_app/view/login/viewmodel/register_View_model.dart';
 
 class RegisterView extends StatelessWidget {
-  const RegisterView({super.key});
+  RegisterView({super.key});
+
+  final controller = Get.put(RegisterViewModel());
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-      appBar: goutAppBar("Sign Up"),
-      backgroundColor: ColorConstants.black,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Get.width * .06),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _textField(),
-            _logInOptions(),
-            _nameField(),
-            _mailField(),
-            _passwordField(),
-            _buttonField(),
-            _signUpField()
-          ],
-        ),
-      ),
-    ));
+    return GetBuilder<RegisterViewModel>(
+      init: RegisterViewModel(),
+      initState: (_) {},
+      builder: (controller) {
+        return SafeArea(
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            backgroundColor: ColorConstants.black,
+            appBar: goutAppBar("Sign Up"),
+            body: Padding(
+              padding: EdgeInsets.symmetric(horizontal: Get.width * .05),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _textField(),
+                  _logInOptions(),
+                  _nameField(),
+                  _mailField(),
+                  _passwordField(),
+                  _buttonField(),
+                  _signUpField()
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
-}
 
-class _textField extends StatelessWidget {
-  const _textField();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _textField() {
     return Padding(
       padding: EdgeInsets.only(top: Get.height * .05, bottom: Get.height * .01),
       child: const Text(
@@ -50,15 +54,10 @@ class _textField extends StatelessWidget {
       ),
     );
   }
-}
 
-class _logInOptions extends StatelessWidget {
-  const _logInOptions();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _logInOptions() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: Get.height * .02),
+      padding: EdgeInsets.symmetric(vertical: Get.height * .015),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -66,13 +65,13 @@ class _logInOptions extends StatelessWidget {
             height: 70,
             width: 170,
             decoration: BoxDecoration(
-                color: ColorConstants.buttonBackgrounColor,
+                color: ColorConstants.backgrounColor,
                 borderRadius: BorderRadius.circular(20)),
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: Get.height * .025),
               child: InkWell(
                 onTap: () {
-                  print("GOOGLE INKWELL");
+                  //GOOGLE
                 },
                 child: Image.asset(
                   "assets/icons/google.png",
@@ -86,13 +85,13 @@ class _logInOptions extends StatelessWidget {
             height: 70,
             width: 170,
             decoration: BoxDecoration(
-                color: ColorConstants.buttonBackgrounColor,
+                color: ColorConstants.backgrounColor,
                 borderRadius: BorderRadius.circular(20)),
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: Get.height * .022),
               child: InkWell(
                 onTap: () {
-                  print("APPLE INKWELL");
+                  //APPLE
                 },
                 child: Image.asset(
                   "assets/icons/apple.png",
@@ -104,16 +103,12 @@ class _logInOptions extends StatelessWidget {
       ),
     );
   }
-}
 
-class _nameField extends StatelessWidget {
-  const _nameField();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _nameField() {
     return Padding(
-      padding: EdgeInsets.only(top: Get.height * .07),
+      padding: EdgeInsets.only(top: Get.height * .05),
       child: TextField(
+        controller: controller.tecName,
         cursorColor: ColorConstants.white,
         keyboardType: TextInputType.emailAddress,
         strutStyle: const StrutStyle(fontSize: 15),
@@ -122,7 +117,7 @@ class _nameField extends StatelessWidget {
           hintText: "Enter your name",
           hintStyle: const TextStyle(color: ColorConstants.grey),
           filled: true,
-          fillColor: ColorConstants.buttonBackgrounColor,
+          fillColor: ColorConstants.backgrounColor,
           labelText: "Name*",
           labelStyle: const TextStyle(color: ColorConstants.white),
           border: OutlineInputBorder(
@@ -132,23 +127,19 @@ class _nameField extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(
                 width: 1.5,
-                color: ColorConstants.textFieldBorderColor,
+                color: ColorConstants.goutBlue,
               ),
               borderRadius: BorderRadius.circular(20)),
         ),
       ),
     );
   }
-}
 
-class _mailField extends StatelessWidget {
-  const _mailField();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _mailField() {
     return Padding(
       padding: EdgeInsets.only(top: Get.height * .03),
       child: TextField(
+        controller: controller.tecMail,
         cursorColor: ColorConstants.white,
         keyboardType: TextInputType.emailAddress,
         strutStyle: const StrutStyle(fontSize: 15),
@@ -157,7 +148,7 @@ class _mailField extends StatelessWidget {
           hintText: "Enter your mail",
           hintStyle: const TextStyle(color: ColorConstants.grey),
           filled: true,
-          fillColor: ColorConstants.buttonBackgrounColor,
+          fillColor: ColorConstants.backgrounColor,
           labelText: "Email*",
           labelStyle: const TextStyle(color: ColorConstants.white),
           border: OutlineInputBorder(
@@ -167,110 +158,111 @@ class _mailField extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(
                 width: 1.5,
-                color: ColorConstants.textFieldBorderColor,
+                color: ColorConstants.goutBlue,
               ),
               borderRadius: BorderRadius.circular(20)),
         ),
       ),
     );
   }
-}
 
-class _passwordField extends StatelessWidget {
-  const _passwordField();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _passwordField() {
     return Padding(
       padding: EdgeInsets.only(top: Get.height * .03),
-      child: TextField(
+      child: Obx(() => TextField(
+        controller: controller.tecPassword,
         cursorColor: ColorConstants.white,
-        keyboardType: TextInputType.visiblePassword,
+        keyboardType: TextInputType.text,
         strutStyle: const StrutStyle(fontSize: 15),
         style: const TextStyle(color: ColorConstants.white),
         decoration: InputDecoration(
-          hintText: "Create a password",
+          hintText: "Enter your password",
           hintStyle: const TextStyle(color: ColorConstants.grey),
           filled: true,
-          fillColor: ColorConstants.buttonBackgrounColor,
+          fillColor: ColorConstants.backgrounColor,
           labelText: "Password*",
           labelStyle: const TextStyle(color: ColorConstants.white),
           border: OutlineInputBorder(
-              borderSide:
-                  const BorderSide(width: 1.5, color: ColorConstants.grey),
-              borderRadius: BorderRadius.circular(20)),
+            borderSide:
+                const BorderSide(width: 1.5, color: ColorConstants.grey),
+            borderRadius: BorderRadius.circular(20),
+          ),
           focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                width: 1.5,
-                color: ColorConstants.textFieldBorderColor,
-              ),
-              borderRadius: BorderRadius.circular(20)),
+            borderSide: const BorderSide(
+              width: 1.5,
+              color: ColorConstants.goutBlue,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
           errorBorder: OutlineInputBorder(
             borderSide: const BorderSide(
-                width: 1.5,
-                color: ColorConstants.red,
-              ),
-              borderRadius: BorderRadius.circular(20)
+              width: 1.5,
+              color: ColorConstants.red,
+            ),
+            borderRadius: BorderRadius.circular(20),
           ),
+          suffixIcon: IconButton(
+            onPressed: () {
+             controller.passwordVisible.value = !controller.passwordVisible.value;
+            }, 
+            icon: controller.passwordVisible.value
+            ? const Icon(Icons.visibility, size: 20, color: ColorConstants.grey,)
+            : const Icon(Icons.visibility_off, size: 20, color: ColorConstants.grey),
+            ),
         ),
+        obscureText: !controller.passwordVisible.value,
       ),
+    ),
     );
   }
-}
-
-class _buttonField extends StatelessWidget {
-  const _buttonField();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buttonField() {
     return Padding(
-      padding: EdgeInsets.only(top: Get.height * .05, bottom: Get.height * .025),
+      padding:
+          EdgeInsets.only(top: Get.height * .05, bottom: Get.height * .025),
       child: InkWell(
-        onTap: () => print("object"),
+        onTap: () {
+          controller.register(
+            controller.tecMail.text.trim(), 
+            controller.tecPassword.text.trim()
+            );
+        },
         child: Container(
           width: Get.width,
           height: Get.height * .075,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              gradient: const LinearGradient(
-                  colors: [ColorConstants.buttonFirstColor, ColorConstants.buttonSecondColor],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight)),
+              gradient: const LinearGradient(colors: [
+                ColorConstants.goutLightBlue,
+                ColorConstants.goutDarkBlue
+              ], begin: Alignment.centerLeft, end: Alignment.centerRight)),
           child: const Center(
             child: Text(
               "Create Account",
-              style: TextStyle(
-                color: ColorConstants.white,
-                fontSize: 20
-              ),
+              style: TextStyle(color: ColorConstants.white, fontSize: 20),
             ),
           ),
         ),
       ),
     );
   }
-}
 
-class _signUpField extends StatelessWidget {
-  const _signUpField();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _signUpField() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
           "Already have an account?",
-          style: TextStyle(
-            color: ColorConstants.grey
-          ),
+          style: TextStyle(color: ColorConstants.grey),
         ),
         TextButton(
-          onPressed: () => Get.to(LoginView()), 
+          onPressed: () {
+            controller.goToLoginView();
+          },
           child: const Text(
-            "Log in", 
-            style: TextStyle(
-              color: ColorConstants.white),),)
+            "Log in",
+            style: TextStyle(color: ColorConstants.white),
+          ),
+        )
       ],
     );
   }
