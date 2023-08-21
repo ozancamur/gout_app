@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -49,21 +46,30 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyDONEuoxLkmzcaXy3MTI7JuY9MBxOHB1OY',
+    appId: '1:643377509802:web:ab256f2a737b337f0367d3',
+    messagingSenderId: '643377509802',
+    projectId: 'gout-app-1c271',
+    authDomain: 'gout-app-1c271.firebaseapp.com',
+    storageBucket: 'gout-app-1c271.appspot.com',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAI5_Whk06_bspiZamD_QNvFD85XkoB6rQ',
-    appId: '1:448037027486:android:905d44121aae07c063c58f',
-    messagingSenderId: '448037027486',
-    projectId: 'gout-ef320',
-    storageBucket: 'gout-ef320.appspot.com',
+    apiKey: 'AIzaSyBeu-dIqFCqX5QL42O85IlVJRJhwfiAHZM',
+    appId: '1:643377509802:android:a9fdd6a8585922410367d3',
+    messagingSenderId: '643377509802',
+    projectId: 'gout-app-1c271',
+    storageBucket: 'gout-app-1c271.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB_ytZJBX6ktS6YrLEgQQhopOMlAs6nxgI',
-    appId: '1:448037027486:ios:e9af2e5aba7a26dd63c58f',
-    messagingSenderId: '448037027486',
-    projectId: 'gout-ef320',
-    storageBucket: 'gout-ef320.appspot.com',
-    iosClientId: '448037027486-ojcdfvpq002mvu9q346cgabs1o4mh5c2.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCIyrvr2aWabKF8jeCLiwVIU3R-dAcHhPc',
+    appId: '1:643377509802:ios:8c5e3ff7f9fc69f60367d3',
+    messagingSenderId: '643377509802',
+    projectId: 'gout-app-1c271',
+    storageBucket: 'gout-app-1c271.appspot.com',
+    iosClientId: '643377509802-g8ak5gddtshh87surkpbdso3piddnsbv.apps.googleusercontent.com',
     iosBundleId: 'com.example.goutApp',
   );
 }

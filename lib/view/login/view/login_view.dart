@@ -1,9 +1,9 @@
 // ignore_for_file: camel_case_types, must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/appbar/gout_appbar.dart';
-import 'package:gout_app/core/constant/color_constants.dart';
-import 'package:gout_app/core/constant/string_constants.dart';
+import 'package:gout_app/core/constant/string/string_constants.dart';
 import 'package:gout_app/view/login/viewmodel/login_view_model.dart';
 
 class LoginView extends StatelessWidget {
@@ -127,7 +127,7 @@ class LoginView extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(
                 width: 1.5,
-                color: ColorConstants.goutBlue,
+                color: ColorConstants.goutMainColor,
               ),
               borderRadius: BorderRadius.circular(20)),
         ),
@@ -159,7 +159,7 @@ class LoginView extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(
               width: 1.5,
-              color: ColorConstants.goutBlue,
+              color: ColorConstants.goutMainColor,
             ),
             borderRadius: BorderRadius.circular(20),
           ),
@@ -200,8 +200,9 @@ class LoginView extends StatelessWidget {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               gradient: const LinearGradient(colors: [
-                ColorConstants.goutLightBlue,
-                ColorConstants.goutDarkBlue
+                ColorConstants.goutSecondColor,
+                ColorConstants.goutMainColor,
+                ColorConstants.goutThirdColor
               ], begin: Alignment.centerLeft, end: Alignment.centerRight)),
           child: const Center(
             child: Text(

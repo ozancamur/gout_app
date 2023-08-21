@@ -1,12 +1,38 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/view/home/controller/home_controller.dart';
+import 'package:gout_app/core/enum/firebase_enum.dart';
+import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
 import 'package:gout_app/view/home/model/home_model.dart';
 
 class HomeViewModel extends GetxController {
-  HomeController homeController = Get.put(HomeController());
-  HomeViewModel({required this.homeController});
+  static HomeViewModel get instance => Get.find();
+  List<HomeModel> eventsList = <HomeModel>[].obs;
 
-// ! HOMECONTROLLER
+  var isLoading = false.obs;
+
+  Future<void> getEvents() async {
+    isLoading.value = true;
+    try {
+      QuerySnapshot events = await FirebaseCollectionsEnum.event.col.get();
+      for (final event in events.docs) {
+        eventsList.clear();
+        eventsList.add(
+          HomeModel(
+            createdOnDate: event["createdOnDate"],
+            createrId: event["createrId"],
+            date: event["date"],
+            eventDescription: event["eventDescription"],
+            eventTitle: event["eventTitle"],
+            id: event.id,
+          ),
+        );
+      }
+    } catch (e) {
+      errorSnackbar("HomeViewModel_getEvents_ERROR: ", "$e");
+    }
+    isLoading.value = false;
+  }
+
   final Map<int, String> monthMap = {
     01: "Jan",
     02: "Feb",
@@ -21,19 +47,4 @@ class HomeViewModel extends GetxController {
     11: "Nov",
     12: "Dec",
   };
-  List<HomeModel> eventList = <HomeModel>[].obs;
-  Future<void> getEvents() async {
-    homeController.getEvents(eventList);
-    update();
-  }
-  // ! HOMECONTROLLER
-
-  // ! DROPDROWNBUTTON
-  final List<String> homeList = ["Offline", "Online", "on Event "];
-  final menuValue = "Online".obs;
-  void setSelected(String selected) {
-    menuValue.value = selected;
-    update();
-  }
-  // ! DROPDROWNBUTTON
 }

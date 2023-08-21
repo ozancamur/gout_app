@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/constant/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 
 AppBar goutAppBar(String title) {
   return AppBar(
+    shadowColor: ColorConstants.goutWhite,
     backgroundColor: ColorConstants.black,
     leading: IconButton(
       onPressed: () => Get.back(),

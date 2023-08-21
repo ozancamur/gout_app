@@ -1,47 +1,44 @@
+// ignore_for_file: camel_case_types, must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/constant/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
+import 'package:gout_app/view/create/view/create_view.dart';
 import 'package:gout_app/view/home/view/home_view.dart';
 import 'package:gout_app/view/proile/view/profile_view.dart';
+import 'package:gout_app/view/search/view/search_view.dart';
+import 'package:gout_app/view/settings/view/settings_view.dart';
 
-class goutBottomAppBar extends StatefulWidget {
-  goutBottomAppBar({
-    required this.pageId,
-    super.key,
-  });
+class goutBottomAppBar extends StatelessWidget {
+  goutBottomAppBar({super.key, required this.pageId});
 
   int pageId;
 
-  @override
-  State<goutBottomAppBar> createState() => _goutBottomAppBarState();
-}
-
-class _goutBottomAppBarState extends State<goutBottomAppBar> {
-  Icon home = Icon(
+// * HOME ICON
+  Icon home = const Icon(
     Icons.home_outlined,
     color: ColorConstants.grey,
     size: 25,
   );
-
-  Icon search = Icon(
+// * SEARCH ICON
+  Icon search = const Icon(
     Icons.search_outlined,
     color: ColorConstants.grey,
     size: 25,
   );
-
-  Icon add = Icon(
+// * ADD ICON
+  Icon add = const Icon(
     Icons.add_circle_outline,
     color: ColorConstants.grey,
     size: 25,
   );
-
-  Icon person = Icon(
+// * PERSON ICON
+  Icon person = const Icon(
     Icons.person_2_outlined,
     color: ColorConstants.grey,
     size: 25,
   );
-
-  Icon settings = Icon(
+// * SETTINGS ICON
+  Icon settings = const Icon(
     Icons.settings_outlined,
     color: ColorConstants.grey,
     size: 25,
@@ -49,20 +46,47 @@ class _goutBottomAppBarState extends State<goutBottomAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.pageId == 0) {
-      Icon(
+    // * HOME ICON
+    if (pageId == 0) {
+      home = const Icon(
         Icons.home,
-        color: ColorConstants.goutBlue,
+        color: ColorConstants.goutMainColor,
         size: 25,
       );
-    } else if ( widget.pageId == 1 ) {
-
-    } else if ( widget.pageId == 2 ) {
-      
-    } else if ( widget.pageId == 3 ) {
-      
-    } else if ( widget.pageId == 4 ) {
-      
+    }
+    // * SEARCH ICON
+    else if (pageId == 1) {
+      search = const Icon(
+        Icons.search,
+        color: ColorConstants.goutMainColor,
+        size: 27,
+      );
+    }
+    // * ADD ICON
+    else if (pageId == 2) {
+      add = const Icon(
+        Icons.add_circle,
+        color: ColorConstants.goutMainColor,
+        size: 25,
+      );
+    }
+    // * PERSON ICON
+    else if (pageId == 3) {
+      person = const Icon(
+        Icons.person_2,
+        color: ColorConstants.goutMainColor,
+        size: 25,
+      );
+    }
+    // * SETTINGS ICON
+    else if (pageId == 4) {
+      settings = const Icon(
+        Icons.settings,
+        color: ColorConstants.goutMainColor,
+        size: 25,
+      );
+    } else {
+      return const SizedBox();
     }
 
     return BottomAppBar(
@@ -70,31 +94,43 @@ class _goutBottomAppBarState extends State<goutBottomAppBar> {
         color: ColorConstants.backgrounColor,
         height: Get.height * .075,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-              onPressed: () {
-                Get.to(HomeView());
-              },
-              icon: home,
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: search,
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: add,
-            ),
-            IconButton(
-              onPressed: () {
-                Get.to(ProfileView());
-              },
-              icon: person,
-            ),
-            IconButton(onPressed: () {}, icon: settings),
-          ],
-        ));
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // * HOME ICON
+              IconButton(
+                onPressed: () {
+                  Get.to(()=>HomeView());
+                },
+                icon: home,
+              ),
+              // * SEARCH ICON
+              IconButton(
+                onPressed: () {
+                  Get.to(()=>SearchView());
+                },
+                icon: search,
+              ),
+              // * ADD ICON
+              IconButton(
+                onPressed: () {
+                  Get.to(() => CreateView());
+                },
+                icon: add,
+              ),
+              // * PROFILE ICON
+              IconButton(
+                onPressed: () {
+                  Get.to(() =>ProfileView());
+                },
+                icon: person,
+              ),
+              // * SETTINGS ICON
+              IconButton(
+                  onPressed: () {
+                    Get.to(() => SettingsView());
+                  },
+                  icon: settings),
+            ]));
   }
 }

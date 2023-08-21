@@ -1,21 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/constant/color_constants.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
+import 'package:gout_app/core/widgets/eventCard/event_card.dart';
+import 'package:gout_app/view/friend/view/friend_request_view.dart';
+import 'package:gout_app/view/friend/view/friends_view.dart';
+import 'package:gout_app/view/proile/viewmodel/profile_view_model.dart';
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+  ProfileView({super.key});
+  final box = GetStorage();
+
+  final controller = Get.put(ProfileViewModel());
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: ColorConstants.black,
-      bottomSheet: goutBottomAppBar(pageId: 3,),
-      body: Column(
+    return GetBuilder<ProfileViewModel>(
+      init: ProfileViewModel(),
+      builder: (controller) {
+        controller.getUserEvents(box.read("userUID"));
+        controller.getUserInfo();
+        return SafeArea(
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            backgroundColor: ColorConstants.black,
+            bottomSheet: goutBottomAppBar(
+              pageId: 3,
+            ),
+            body: _bodyField(),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _bodyField() {
+    return SizedBox(
+      height: Get.height,
+      width: Get.width,
+      child: Stack(
         children: [
-          _userCard()
-          ],
+          _eventField(),
+          _userCard(),
+        ],
+      ),
+    );
+  }
+
+  Widget _eventField() {
+    return Positioned(
+      top: Get.height * .37,
+      left: Get.width * .05,
+      right: Get.width * .05,
+      child: Container(
+        height: Get.height * .5,
+        width: Get.width,
+        decoration: const BoxDecoration(color: ColorConstants.black),
+        child: ListView.builder(
+          itemCount: controller.userEventList.length,
+          itemBuilder: (context, index) {
+             DateTime date =
+                      controller.userEventList[index].date.toDate();
+                  String month = controller.monthMap[date.month]!;
+                  String day;
+                  date.day < 10
+                      ? day = "0${date.day}"
+                      : day = "${date.day}";
+            return EventCard(
+              month: month, 
+              day: day, 
+              eventTitle: controller.userEventList[index].eventTitle, 
+              nickname: controller.profileUserModel.value.nickname, 
+              eventId: controller.userEventList[index].id,
+              );
+          },
+        ),
       ),
     );
   }
@@ -32,79 +92,161 @@ class ProfileView extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.only(top: Get.height * .075),
+        padding: EdgeInsets.only(top: Get.height * .07),
         child: Column(
           children: [
-            Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Get.width * .05),
-                  child: Container(
-                    height: Get.height * .15,
-                    width: Get.width * .3,
-                    decoration: BoxDecoration(
+            Padding(
+              padding: EdgeInsets.only(top: Get.width * .05),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ! USER IMAGE
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: Get.width * .05),
+                    child: Container(
+                      height: Get.height * .15,
+                      width: Get.width * .3,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: ColorConstants.backgrounColor),
+                      child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        color: ColorConstants.backgrounColor),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.asset(
-                        "assets/images/me.png",
-                        fit: BoxFit.cover,
+                        child: Image.asset(
+                          "assets/images/me.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: Get.height * .06),
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Ozan Camur",
-                        style: TextStyle(
-                          color: ColorConstants.white,
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        "@ozancamur",
-                        style: TextStyle(
-                          color: ColorConstants.grey,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                  // ! USER NAME AND NICKNAME
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: Get.height * .06),
+                    child: Obx(() => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              controller.profileUserModel.value.name,
+                              style: const TextStyle(
+                                color: ColorConstants.white,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              "@${controller.profileUserModel.value.nickname}"
+                                  .toLowerCase(),
+                              style: const TextStyle(
+                                color: ColorConstants.grey,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        )),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: Get.width * .25,
+                      right: Get.width * .09,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.to(() => FriendRequestView());
+                      },
+                      child: Stack(
+                        children: [
+                          // ! ICON OF FRIENDS REQUEST
+                          Padding(
+                            padding: EdgeInsets.only(top: Get.height * .0075),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                      width: 1.5,
+                                      color: ColorConstants.goutWhite)),
+                              child: Padding(
+                                padding: EdgeInsets.all(Get.width * .015),
+                                child: const Icon(
+                                  Icons.group,
+                                  color: ColorConstants.goutWhite,
+                                  size: 22,
+                                ),
+                              ),
+                            ),
+                          ),
+                          // ! COUNT OF FRIENDS REQUEST
+                          if (controller
+                              .profileUserModel.value.friendRequest.isEmpty)
+                            const SizedBox()
+                          else
+                            Positioned(
+                              left: Get.width * .05,
+                              child: SizedBox(
+                                width: Get.width * .05,
+                                child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: Get.height * 0.005),
+                                    child: Container(
+                                        decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.red),
+                                        child: Center(
+                                          child: Text(
+                                            controller.profileUserModel.value
+                                                .friendRequest.length
+                                                .toString(),
+                                            style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
+                                        ))),
+                              ),
+                            )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: Get.height*.02
-              ),
-              child: const Row(
+              padding: EdgeInsets.symmetric(vertical: Get.height * .01),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  // ! POST COUNT
                   Column(
                     children: [
-                      Text("84", style: TextStyle(color: ColorConstants.white),),
-                      Text("Posts", style: TextStyle(color: ColorConstants.white),),
+                      Text(
+                        controller.userEventList.length.toString(),
+                        style: const TextStyle(color: ColorConstants.white),
+                      ),
+                      const Text(
+                        "Posts",
+                        style: TextStyle(color: ColorConstants.white),
+                      ),
                     ],
                   ),
-              Column(
-                children: [
-                  Text("1.5M", style: TextStyle(color: ColorConstants.white),),
-                  Text("Followers", style: TextStyle(color: ColorConstants.white),),
-                ],
-              ),
-              Column(
-                children: [
-                  Text("257", style: TextStyle(color: ColorConstants.white),),
-                  Text("Following", style: TextStyle(color: ColorConstants.white),),
-                ],
-              )
+                  // ! FRIENDS COUNT
+                  InkWell(
+                    onTap: () {
+                      Get.to(() => FriendsView());
+                    },
+                    child: Column(
+                      children: [
+                        Text(
+                          controller.profileUserModel.value.friends.length
+                              .toString(),
+                          style: const TextStyle(color: ColorConstants.white),
+                        ),
+                        const Text(
+                          "Friends",
+                          style: TextStyle(color: ColorConstants.white),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             )
@@ -114,3 +256,14 @@ class ProfileView extends StatelessWidget {
     );
   }
 }
+
+
+/*
+ DateTime date =
+                      controller.userEventList[index].date.toDate();
+                  String? month = controller.monthMap[date.month];
+                  String day;
+                  date.day < 10
+                      ? day = "0${date.day}"
+                      : day = "${date.day}";
+*/

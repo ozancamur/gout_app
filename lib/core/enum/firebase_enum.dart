@@ -6,7 +6,9 @@ enum FirebaseCollectionsEnum {
   user,
   event;
 
-  CollectionReference get reference => 
+  CollectionReference get col => 
     FirebaseFirestore.instance.collection(name);
+
+  
 
 }

@@ -17,11 +17,11 @@ class LoginViewModel extends GetxController {
     String? error =
         await firebaseAuth.loginWithEmailAndPassword(email, password);
     if (error != null) {
-      errorSnackbar("LoginViewModel, loginERROR: ", "$error");
+      errorSnackbar("LoginViewModel, loginERROR: ", error);
     }
   }
 
   void goToRegisterView() {
-    Get.to(RegisterView());
+    Get.to(() => RegisterView());
   }
 }

@@ -1,38 +1,46 @@
 // ignore_for_file: must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/widgets/bottomNavigatorBar/event_card.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
+import 'package:gout_app/core/widgets/eventCard/event_card.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
-import 'package:gout_app/core/constant/color_constants.dart';
-import 'package:gout_app/view/home/controller/home_controller.dart';
+import 'package:gout_app/core/widgets/loading/loading.dart';
 import 'package:gout_app/view/home/viewmodel/home_view_model.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({super.key});
 
-  HomeViewModel homeViewModel =
-      Get.put(HomeViewModel(homeController: HomeController()));
+  final controller = Get.put(HomeViewModel.instance);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<HomeController>(
-      builder: (homeController) {
-        homeViewModel.getEvents();
-        return Scaffold(
-            backgroundColor: ColorConstants.black,
-            bottomSheet: goutBottomAppBar(pageId: 0,),
-            body: SizedBox(
-              height: Get.height,
-              width: Get.width,
-              child: Stack(
-                children: [
-                  _eventBox(),
-                  _customAppBar(),
-                ],
+    return GetBuilder<HomeViewModel>(
+      init: HomeViewModel(),
+      initState: (_) {},
+      builder: (controller) {
+        controller.getEvents();
+        return SafeArea(
+          child: Scaffold(
+              backgroundColor: ColorConstants.black,
+              bottomSheet: goutBottomAppBar(
+                pageId: 0,
               ),
-            ),
-          );
+              body: _bodyField()),
+        );
       },
+    );
+  }
+
+  Widget _bodyField() {
+    return SizedBox(
+      height: Get.height,
+      width: Get.width,
+      child: Column(
+        children: [
+          _customAppBar(),
+          _eventList(),
+        ],
+      ),
     );
   }
 
@@ -52,43 +60,17 @@ class HomeView extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.only(top: Get.height * .08),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     "you are",
                     style: TextStyle(
-                        color: ColorConstants.goutDarkBlue, fontSize: 16),
+                        color: ColorConstants.goutThirdColor, fontSize: 16),
                   ),
-                  Obx(
-                    () => DropdownButton<String>(
-                      underline: const SizedBox(),
-                      borderRadius: BorderRadius.circular(30),
-                      padding:
-                          EdgeInsets.symmetric(vertical: Get.height * .002),
-                      isDense: true,
-                      dropdownColor: ColorConstants.backgrounColor,
-                      iconDisabledColor: ColorConstants.white,
-                      iconEnabledColor: ColorConstants.white,
-                      iconSize: 0,
-                      style: const TextStyle(
-                          color: ColorConstants.white, fontSize: 25),
-                      value: homeViewModel.menuValue.value,
-                      icon: const Icon(Icons.arrow_downward_outlined),
-                      onChanged: (newValue) {
-                        homeViewModel.setSelected(newValue!);
-                      },
-                      items: homeViewModel.homeList
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
+                  Text("Online",
+                      style:
+                          TextStyle(color: ColorConstants.white, fontSize: 25)),
                   //Text("Volkswagen Arena", style: TextStyle(color: ColorConstants.white, fontSize: 20),),
                 ],
               ),
@@ -96,7 +78,7 @@ class HomeView extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: Get.height * .06),
               child: const CircleAvatar(
-                backgroundColor: ColorConstants.goutBlue,
+                backgroundColor: ColorConstants.goutMainColor,
                 minRadius: 21.75,
                 maxRadius: 28.75,
                 child: CircleAvatar(
@@ -112,31 +94,34 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _eventBox() {
+  Widget _eventList() {
     return Positioned(
       top: 100,
       left: 25,
       child: SizedBox(
-      height: Get.height,
-      width: Get.width * .87,
-      child: Obx(
-        () => ListView.builder(
-          itemCount: homeViewModel.eventList.length,
-          itemBuilder: (context, index) {
-            DateTime date = homeViewModel.eventList[index].date.toDate();
-            String? month = homeViewModel.monthMap[date.month];
-            String day;
-            date.day < 10 ? day = "0${date.day}" : day = "${date.day}";
-            return EventCard(
-              day: day, 
-              month: month!, 
-              eventTitle: homeViewModel.eventList[index].eventTitle,
-              nickname: "ozancamur",
-              );
-          },
+        height: Get.height * .751,
+        width: Get.width * .87,
+        child: Obx(
+          () => ListView.builder(
+            itemCount: controller.eventsList.length,
+            itemBuilder: (context, index) {
+              DateTime date = controller.eventsList[index].date.toDate();
+              String? month = controller.monthMap[date.month];
+              String day;
+              date.day < 10 ? day = "0${date.day}" : day = "${date.day}";
+              return controller.isLoading.value
+                  ? const LoadingWidget()
+                  : EventCard(
+                      day: day,
+                      month: month!,
+                      eventTitle: controller.eventsList[index].eventTitle,
+                      nickname: "ozancamur",
+                      eventId: controller.eventsList[index].id,
+                    );
+            },
+          ),
         ),
       ),
-    )
     );
   }
 }
