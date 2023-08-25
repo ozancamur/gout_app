@@ -7,7 +7,6 @@ import 'package:gout_app/view/search/model/search_event_model.dart';
 import 'package:gout_app/view/search/model/search_user_model.dart';
 
 class SearchViewModel extends GetxController {
-  static SearchViewModel get instance => Get.find();
 
   List<Color> unactiveColor = [
     ColorConstants.backgrounColor,
@@ -38,7 +37,7 @@ class SearchViewModel extends GetxController {
           .get()
           .then((value) {
         for (final val in value.docs) {
-          userList.add(SearchUserModel(id: val.id, nickname: val["nickname"]));
+          userList.add(SearchUserModel(id: val.id,name: val["name"], nickname: val["nickname"]));
         }
       });
       update();

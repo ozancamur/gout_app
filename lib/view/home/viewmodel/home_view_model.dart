@@ -5,17 +5,20 @@ import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
 import 'package:gout_app/view/home/model/home_model.dart';
 
 class HomeViewModel extends GetxController {
-  static HomeViewModel get instance => Get.find();
   List<HomeModel> eventsList = <HomeModel>[].obs;
+  List<String> nickname = <String>[].obs;
+  List<String> name = <String>[].obs;
+
+  
 
   var isLoading = false.obs;
 
   Future<void> getEvents() async {
-    isLoading.value = true;
     try {
       QuerySnapshot events = await FirebaseCollectionsEnum.event.col.get();
+      eventsList.clear();
+
       for (final event in events.docs) {
-        eventsList.clear();
         eventsList.add(
           HomeModel(
             createdOnDate: event["createdOnDate"],
@@ -26,11 +29,24 @@ class HomeViewModel extends GetxController {
             id: event.id,
           ),
         );
+        update();
       }
     } catch (e) {
       errorSnackbar("HomeViewModel_getEvents_ERROR: ", "$e");
     }
-    isLoading.value = false;
+  }
+
+  void getCreaterNickname(String id) async {
+    isLoading.value = true;
+    try {
+      DocumentSnapshot creater =
+          await FirebaseCollectionsEnum.user.col.doc(id).get();
+      nickname.add(creater["nickname"]);
+      name.add(creater["name"]);
+    } catch (e) {
+      errorSnackbar("HomeViewModel_getEvents_ERROR: ", "$e");
+    }
+    isLoading.value = true;
   }
 
   final Map<int, String> monthMap = {

@@ -30,14 +30,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^2.15.1
   get: ^4.6.5
-  cloud_firestore: ^4.8.5
-  firebase_auth: ^4.7.3
   get_storage: ^2.1.1
   awesome_notifications: ^0.7.4+1
   awesome_notifications_fcm: ^0.7.4+1
-  http: ^1.1.0
+  firebase_core: ^2.15.1
+  cloud_firestore: ^4.9.0
+  firebase_auth: ^4.8.0
   
 
 dev_dependencies:

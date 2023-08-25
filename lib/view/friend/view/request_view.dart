@@ -3,19 +3,19 @@ import 'package:get/get.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/firebase/firebase_firestore.dart';
 import 'package:gout_app/core/widgets/appBar/gout_appbar.dart';
-import 'package:gout_app/view/friend/viewmodel/friend_view_model.dart';
+import 'package:gout_app/view/friend/viewmodel/request_view_model.dart';
 import 'package:gout_app/view/proile/viewmodel/profile_view_model.dart';
 
-class FriendRequestView extends StatelessWidget {
-  FriendRequestView({super.key});
+class RequestView extends StatelessWidget {
+  RequestView({super.key});
   final profileController = Get.put(ProfileViewModel());
-  final controller = Get.put(FriendViewModel());
+  final controller = Get.put(RequestViewModel());
   final firestore = Get.put(FirebaseFirestoreController());
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<FriendViewModel>(
-      init: FriendViewModel(),
+    return GetBuilder<RequestViewModel>(
+      init: RequestViewModel(),
       builder: (controller) {
         controller.getFriendRequest();
         return SafeArea(
@@ -35,12 +35,12 @@ class FriendRequestView extends StatelessWidget {
       width: Get.width,
       child: Obx(
         () => ListView.builder(
-          itemCount: controller.friendRequest.length,
+          itemCount: controller.friendRequestList.length,
           itemBuilder: (context, index) {
             return _friendRequestCard(
-              id: controller.friendRequest[index].id,
-              name: controller.friendRequest[index].name,
-              nickname: controller.friendRequest[index].nickname,
+              id: controller.friendRequestList[index].id,
+              name: controller.friendRequestList[index].name,
+              nickname: controller.friendRequestList[index].nickname,
             );
           },
         ),
@@ -137,7 +137,7 @@ class FriendRequestView extends StatelessWidget {
           child: InkWell(
             onTap: () {
               firestore.cancelFriendRequest(id);
-              print("view cancel");
+              
             },
             child: Container(
               height: Get.height * .051,

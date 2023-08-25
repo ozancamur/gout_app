@@ -1,18 +1,18 @@
+// ignore_for_file: must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
 import 'package:gout_app/core/widgets/eventCard/event_card.dart';
-import 'package:gout_app/view/friend/view/friend_request_view.dart';
+import 'package:gout_app/view/friend/view/request_view.dart';
 import 'package:gout_app/view/friend/view/friends_view.dart';
 import 'package:gout_app/view/proile/viewmodel/profile_view_model.dart';
 
 class ProfileView extends StatelessWidget {
   ProfileView({super.key});
-  final box = GetStorage();
-
   final controller = Get.put(ProfileViewModel());
+  final box = GetStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +21,13 @@ class ProfileView extends StatelessWidget {
       builder: (controller) {
         controller.getUserEvents(box.read("userUID"));
         controller.getUserInfo();
-        return SafeArea(
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            backgroundColor: ColorConstants.black,
-            bottomSheet: goutBottomAppBar(
-              pageId: 3,
-            ),
-            body: _bodyField(),
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: ColorConstants.black,
+          bottomSheet: goutBottomAppBar(
+            pageId: 3,
           ),
+          body: _bodyField(),
         );
       },
     );
@@ -50,30 +48,28 @@ class ProfileView extends StatelessWidget {
 
   Widget _eventField() {
     return Positioned(
-      top: Get.height * .37,
+      top: Get.height * .32,
       left: Get.width * .05,
       right: Get.width * .05,
       child: Container(
-        height: Get.height * .5,
+        height: Get.height * .55,
         width: Get.width,
         decoration: const BoxDecoration(color: ColorConstants.black),
         child: ListView.builder(
           itemCount: controller.userEventList.length,
           itemBuilder: (context, index) {
-             DateTime date =
-                      controller.userEventList[index].date.toDate();
-                  String month = controller.monthMap[date.month]!;
-                  String day;
-                  date.day < 10
-                      ? day = "0${date.day}"
-                      : day = "${date.day}";
+            DateTime date = controller.userEventList[index].date.toDate();
+            String month = controller.monthMap[date.month]!;
+            String day;
+            date.day < 10 ? day = "0${date.day}" : day = "${date.day}";
             return EventCard(
-              month: month, 
-              day: day, 
-              eventTitle: controller.userEventList[index].eventTitle, 
-              nickname: controller.profileUserModel.value.nickname, 
+              month: month,
+              day: day,
+              eventTitle: controller.userEventList[index].eventTitle,
+              nickname: controller.profileUserModel.value.nickname,
               eventId: controller.userEventList[index].id,
-              );
+              createrName: controller.profileUserModel.value.name,
+            );
           },
         ),
       ),
@@ -146,64 +142,67 @@ class ProfileView extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                      left: Get.width * .25,
-                      right: Get.width * .09,
+                      left: Get.width * .075,
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        Get.to(() => FriendRequestView());
+                        Get.to(() => RequestView());
                       },
-                      child: Stack(
-                        children: [
-                          // ! ICON OF FRIENDS REQUEST
-                          Padding(
-                            padding: EdgeInsets.only(top: Get.height * .0075),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      width: 1.5,
-                                      color: ColorConstants.goutWhite)),
-                              child: Padding(
-                                padding: EdgeInsets.all(Get.width * .015),
-                                child: const Icon(
-                                  Icons.group,
-                                  color: ColorConstants.goutWhite,
-                                  size: 22,
+                      child: SizedBox(
+                        height: Get.height * .2,
+                        width: Get.width * .1,
+                        child: Stack(
+                          children: [
+                            // ! ICON OF FRIENDS REQUEST
+                            Padding(
+                              padding: EdgeInsets.only(top: Get.height * .0075),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        width: 1.5,
+                                        color: ColorConstants.goutWhite)),
+                                child: Padding(
+                                  padding: EdgeInsets.all(Get.width * .015),
+                                  child: const Icon(
+                                    Icons.group,
+                                    color: ColorConstants.goutWhite,
+                                    size: 22,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          // ! COUNT OF FRIENDS REQUEST
-                          if (controller
-                              .profileUserModel.value.friendRequest.isEmpty)
-                            const SizedBox()
-                          else
-                            Positioned(
-                              left: Get.width * .05,
-                              child: SizedBox(
-                                width: Get.width * .05,
-                                child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: Get.height * 0.005),
-                                    child: Container(
-                                        decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.red),
-                                        child: Center(
-                                          child: Text(
-                                            controller.profileUserModel.value
-                                                .friendRequest.length
-                                                .toString(),
-                                            style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white),
-                                          ),
-                                        ))),
-                              ),
-                            )
-                        ],
+                            // ! COUNT OF FRIENDS REQUEST
+                            if (controller
+                                .profileUserModel.value.friendRequest.isEmpty)
+                              const SizedBox()
+                            else
+                              Positioned(
+                                left: Get.width * .05,
+                                child: SizedBox(
+                                  width: Get.width * .05,
+                                  child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: Get.height * 0.005),
+                                      child: Container(
+                                          decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.red),
+                                          child: Center(
+                                            child: Text(
+                                              controller.profileUserModel.value
+                                                  .friendRequest.length
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white),
+                                            ),
+                                          ))),
+                                ),
+                              )
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -256,14 +255,3 @@ class ProfileView extends StatelessWidget {
     );
   }
 }
-
-
-/*
- DateTime date =
-                      controller.userEventList[index].date.toDate();
-                  String? month = controller.monthMap[date.month];
-                  String day;
-                  date.day < 10
-                      ? day = "0${date.day}"
-                      : day = "${date.day}";
-*/

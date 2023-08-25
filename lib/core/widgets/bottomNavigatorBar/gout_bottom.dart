@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types, must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/view/create/view/create_view.dart';
 import 'package:gout_app/view/home/view/home_view.dart';
@@ -10,9 +11,11 @@ import 'package:gout_app/view/settings/view/settings_view.dart';
 
 class goutBottomAppBar extends StatelessWidget {
   goutBottomAppBar({super.key, required this.pageId});
+  final box = GetStorage();
 
   int pageId;
 
+// ! ICONS
 // * HOME ICON
   Icon home = const Icon(
     Icons.home_outlined,
@@ -44,8 +47,10 @@ class goutBottomAppBar extends StatelessWidget {
     size: 25,
   );
 
+
   @override
   Widget build(BuildContext context) {
+    //!   QUERIES
     // * HOME ICON
     if (pageId == 0) {
       home = const Icon(
@@ -97,6 +102,7 @@ class goutBottomAppBar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              // ! WIDGETS
               // * HOME ICON
               IconButton(
                 onPressed: () {
@@ -121,7 +127,7 @@ class goutBottomAppBar extends StatelessWidget {
               // * PROFILE ICON
               IconButton(
                 onPressed: () {
-                  Get.to(() =>ProfileView());
+                  Get.to(() => ProfileView());
                 },
                 icon: person,
               ),

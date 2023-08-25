@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/appBar/gout_appbar.dart';
-import 'package:gout_app/view/friend/viewmodel/friend_view_model.dart';
+import 'package:gout_app/view/friend/viewmodel/friends_view_model.dart';
 import 'package:gout_app/view/proile/viewmodel/profile_view_model.dart';
 
 class FriendsView extends StatelessWidget {
   FriendsView({super.key});
   final profileController = Get.put(ProfileViewModel());
-  final controller = Get.put(FriendViewModel());
+  final controller = Get.put(FriendsViewModel());
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<FriendViewModel>(
-      init: FriendViewModel(),
+    return GetBuilder<FriendsViewModel>(
+      init: FriendsViewModel(),
       builder: (controller) {
         controller.getFriends();
         return SafeArea(
@@ -33,10 +33,10 @@ class FriendsView extends StatelessWidget {
       width: Get.width,
       child: Obx(
         () => ListView.builder(
-          itemCount: controller.friends.length,
+          itemCount: controller.friendsList.length,
           itemBuilder: (context, index) {
-            return _friendsCard(controller.friends[index].name,
-                controller.friends[index].nickname);
+            return _friendsCard(controller.friendsList[index].name,
+                controller.friendsList[index].nickname);
           },
         ),
       ),

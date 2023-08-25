@@ -8,12 +8,14 @@ class DetailModel {
   Timestamp date;
   String eventDescription;
   String eventTitle;
+  List arrivals;
   DetailModel({
     required this.createdOnDate,
     required this.createrId,
     required this.date,
     required this.eventDescription,
     required this.eventTitle,
+    required this.arrivals,
   });
 
 }

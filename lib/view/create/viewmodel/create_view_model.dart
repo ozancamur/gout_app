@@ -5,9 +5,7 @@ import 'package:gout_app/core/firebase/firebase_firestore.dart';
 import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
 
 class CreateViewModel extends GetxController {
-  static CreateViewModel get instance => Get.find();
-
-    final firebaseFirestore = Get.put(FirebaseFirestoreController.instance);
+    final firebaseFirestore = Get.put(FirebaseFirestoreController());
 
 
   TextEditingController tecEventTitle = TextEditingController();
@@ -40,7 +38,7 @@ class CreateViewModel extends GetxController {
       }
   }
 
-  void createEvent () {
+  Future<void> createEvent() async {
     try {
       var choosedDate = Timestamp.fromDate(DateTime(
         currentDate.value.year, currentDate.value.month, currentDate.value.day, 

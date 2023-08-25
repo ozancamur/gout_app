@@ -7,7 +7,6 @@ import 'package:gout_app/view/proile/model/profile_event_model.dart';
 import 'package:gout_app/view/proile/model/profile_user_model.dart';
 
 class ProfileViewModel extends GetxController {
-  static ProfileViewModel get instance => Get.find();
   final box = GetStorage();
   var isLoading = false.obs;
 
@@ -40,24 +39,25 @@ class ProfileViewModel extends GetxController {
   Future<void> getUserEvents(String id) async {
     isLoading.value = true;
     try {
-      QuerySnapshot events = await FirebaseFirestore.instance
-          .collection("user")
-          .doc(id)
+      await FirebaseFirestore.instance
           .collection("event")
-          .get();
-      for (final event in events.docs) {
-        userEventList.clear();
-        userEventList.add(
-          ProfileEventModel(
-            id: id,
-            eventTitle: event["eventTitle"],
-            eventDescription: event["eventDescription"],
-            date: event["date"],
-          ),
-        );
-        update();
-        
-      }
+          .where("createrId", isEqualTo: box.read("userUID"))
+          .get()
+          .then((events) {
+                  userEventList.clear();
+
+        for (final event in events.docs) {
+          userEventList.add(
+            ProfileEventModel(
+              id: event.id,
+              eventTitle: event["eventTitle"],
+              eventDescription: event["eventDescription"],
+              date: event["date"],
+            ),
+          );
+          update();
+        }
+      });
     } catch (e) {
       errorSnackbar("ProfileController, getUserEvents ERROR: ", "$e");
     }

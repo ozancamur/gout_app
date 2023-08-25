@@ -9,9 +9,8 @@ import 'package:gout_app/view/login/view/login_view.dart';
 import '../../../core/widgets/error/snackbar/error_snackbar.dart';
 
 class RegisterViewModel extends GetxController {
-  static RegisterViewModel get instance => Get.find();
 
-  final firebaseAuth = Get.put(FirebaseAuthController.instance);
+  final firebaseAuth = Get.put(FirebaseAuthController());
   RandomNick randomNick = RandomNick();
 
   Rx<bool> passwordVisible = false.obs;

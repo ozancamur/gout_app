@@ -5,7 +5,6 @@ import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
 import 'package:gout_app/view/login/view/register_view.dart';
 
 class LoginViewModel extends GetxController {
-  static LoginViewModel get instance => Get.find();
   final firebaseAuth = Get.put(FirebaseAuthController());
 
   Rx<bool> passwordVisible = false.obs;

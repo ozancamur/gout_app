@@ -10,7 +10,8 @@ class EventCard extends StatelessWidget {
      required this.day,
     required this.eventTitle,
     required this.nickname,
-    required this.eventId
+    required this.eventId,
+    required this.createrName,
   });
 
   final String month;
@@ -18,6 +19,7 @@ class EventCard extends StatelessWidget {
   final String eventTitle;
   final String nickname;
   final String eventId;
+  final String createrName;
 
 
   @override
@@ -109,7 +111,7 @@ class EventCard extends StatelessWidget {
               ),
               onPressed: () { 
                 
-                Get.to( () => DetailView(eventId: eventId,));
+                Get.to( () => DetailView(eventId: eventId,createrName: createrName,));
               },
             ),
           ],

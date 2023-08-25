@@ -48,11 +48,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyDONEuoxLkmzcaXy3MTI7JuY9MBxOHB1OY',
-    appId: '1:643377509802:web:ab256f2a737b337f0367d3',
+    appId: '1:643377509802:web:a38dd035075e0c1a0367d3',
     messagingSenderId: '643377509802',
     projectId: 'gout-app-1c271',
     authDomain: 'gout-app-1c271.firebaseapp.com',
     storageBucket: 'gout-app-1c271.appspot.com',
+    measurementId: 'G-X2FT9X7S67',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -69,6 +70,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '643377509802',
     projectId: 'gout-app-1c271',
     storageBucket: 'gout-app-1c271.appspot.com',
+    androidClientId: '643377509802-2ss0grn7l6t3seeiplkig54t5do3rgdt.apps.googleusercontent.com',
     iosClientId: '643377509802-g8ak5gddtshh87surkpbdso3piddnsbv.apps.googleusercontent.com',
     iosBundleId: 'com.example.goutApp',
   );

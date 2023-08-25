@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/view/detail/controller/detail_controller.dart';
+import 'package:gout_app/core/enum/firebase_enum.dart';
+import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
 import 'package:gout_app/view/detail/model/detail_model.dart';
 
 class DetailViewModel extends GetxController {
-  static DetailViewModel get instance => Get.find();
-  final controller = Get.put(DetailController());
   
   final Map<int, String> monthMap = {
     01: "Jan",
@@ -27,11 +26,30 @@ class DetailViewModel extends GetxController {
     createrId: "", 
     date: Timestamp(0, 0),
     eventDescription: "", 
-    eventTitle: ""
+    eventTitle: "",
+    arrivals: [],
     ).obs;
 
-  void getEventInfo(String eventId) {
-    controller.getEventsDetail(eventId, detailModel); 
+  Future<void> getEventsDetail(
+      String eventId) async {
+    try {
+      DocumentSnapshot event =
+          await FirebaseCollectionsEnum.event.col.doc(eventId).get();
+
+      detailModel.update(
+        (val) {
+          val!.createrId = event["createrId"];
+          val.createdOnDate = event["createdOnDate"];
+          val.date = event["date"];
+          val.eventTitle = event["eventTitle"];
+          val.eventDescription = event["eventDescription"];
+          val.arrivals = event["arrivals"];
+        },
+      );
+      update();
+    } catch (e) {
+      errorSnackbar("DetailControllerERROR: ", "$e");
+    }
   }
 
   

@@ -16,6 +16,7 @@ class ColorConstants {
   static const Color goutMainColor = Color.fromRGBO(119, 66, 230, 1);
   static const Color goutSecondColor = Color.fromRGBO(0, 246, 252, 1);
   static const Color goutThirdColor = Color.fromRGBO(254, 0, 253, 1);
+  static const Color goutMainDarkColor = Color.fromRGBO(90, 40, 200, 1);
 
   static const Color goutPurple = Color.fromRGBO(190, 164, 255, 1);
   static const Color goutWhite = Color.fromRGBO(200, 200, 200, 1);

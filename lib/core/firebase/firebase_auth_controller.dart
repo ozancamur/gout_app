@@ -7,7 +7,6 @@ import 'package:gout_app/view/home/view/home_view.dart';
 import 'package:gout_app/view/login/view/login_view.dart';
 
 class FirebaseAuthController extends GetxController {
-  static FirebaseAuthController get instance => Get.find();
 
   final firestoreController = Get.put(FirebaseFirestoreController());
   final box = GetStorage();
@@ -60,4 +59,7 @@ class FirebaseAuthController extends GetxController {
 
   Future<void> signOut() async => await _auth.signOut();
 
+  Future<void> changeEmail(String newEmail) async => _auth.currentUser!.updateEmail(newEmail);
+  
+  Future<void> changePassword(String newPassword) async => _auth.currentUser!.updatePassword(newPassword);
 }
