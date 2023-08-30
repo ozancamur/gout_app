@@ -37,7 +37,7 @@ class SearchViewModel extends GetxController {
           .get()
           .then((value) {
         for (final val in value.docs) {
-          userList.add(SearchUserModel(id: val.id,name: val["name"], nickname: val["nickname"]));
+          userList.add(SearchUserModel(id: val.id,name: val["name"], nickname: val["nickname"], imageURL: val["profilePhotoPath"]));
         }
       });
       update();

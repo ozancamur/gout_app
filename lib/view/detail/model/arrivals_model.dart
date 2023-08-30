@@ -1,13 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-class SearchUserModel {
+class UserModelForEvent {
   String? id;
   String? name;
   String? nickname;
-  String? imageURL;
-  SearchUserModel({
+  List favorites;
+  String photoURL;
+  UserModelForEvent({
     required this.id,
     required this.name,
     required this.nickname,
-    required this.imageURL
+    required this.favorites,
+    required this.photoURL,
   });
 }

@@ -1,12 +1,15 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/appBar/gout_appbar.dart';
-import 'package:gout_app/view/friend/viewmodel/friends_view_model.dart';
+import 'package:gout_app/view/friend/friends/viewmodel/friends_view_model.dart';
 import 'package:gout_app/view/proile/viewmodel/profile_view_model.dart';
 
 class FriendsView extends StatelessWidget {
-  FriendsView({super.key});
+  FriendsView({super.key, required this.list});
+  List list;
   final profileController = Get.put(ProfileViewModel());
   final controller = Get.put(FriendsViewModel());
 
@@ -15,7 +18,7 @@ class FriendsView extends StatelessWidget {
     return GetBuilder<FriendsViewModel>(
       init: FriendsViewModel(),
       builder: (controller) {
-        controller.getFriends();
+        controller.getFriends(list);
         return SafeArea(
           child: Scaffold(
             backgroundColor: ColorConstants.black,

@@ -7,15 +7,20 @@ class ProfileUserModel {
   String email;
   String password;
   Timestamp date;
-  List friends;
-  List friendRequest;
+  List followers;
+  List requests;
+  List favorites;
+  String photoURL;
   ProfileUserModel({
     required this.name,
     required this.nickname,
     required this.email,
     required this.password,
     required this.date,
-    required this.friends,
-    required this.friendRequest
+    required this.followers,
+    required this.requests,
+    required this.favorites,
+    required this.photoURL
+    
   });
 }

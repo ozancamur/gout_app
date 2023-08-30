@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/firebase/firebase_auth_controller.dart';
-import 'package:gout_app/core/widgets/appbar/gout_appbar.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
 import 'package:gout_app/view/settings/viewmodel/settings_view_model.dart';
 
@@ -18,7 +17,16 @@ class SettingsView extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: ColorConstants.black,
-        appBar: goutAppBar("Settings"),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          shadowColor: ColorConstants.goutWhite,
+          backgroundColor: ColorConstants.black,
+          title: const Text(
+            "Settings",
+            style: TextStyle(color: ColorConstants.goutWhite, fontSize: 25),
+          ),
+        ),
         bottomSheet: goutBottomAppBar(
           pageId: 4,
         ),

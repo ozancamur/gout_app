@@ -6,8 +6,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:gout_app/core/enum/firebase_enum.dart';
 import 'package:gout_app/core/firebase/firebase_firestore.dart';
 import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
-import 'package:gout_app/view/friend/model/friend_event_model.dart';
-import 'package:gout_app/view/friend/model/friend_user_model.dart';
+import 'package:gout_app/view/friend/friends/model/friend_event_model.dart';
+import 'package:gout_app/view/friend/profile/model/friend_user_model.dart';
 
 class FriendProfileViewModel extends GetxController {
   final box = GetStorage();
@@ -34,7 +34,7 @@ class FriendProfileViewModel extends GetxController {
     id: "",
     name: "",
     nickname: "",
-    friends: [], 
+    followers: [], 
   ).obs;
   List<FriendEventModel> userEvents = <FriendEventModel>[].obs;
 
@@ -46,7 +46,7 @@ class FriendProfileViewModel extends GetxController {
         val!.id = friend.id;
         val.name = friend["name"];
         val.nickname = friend["nickname"];
-        val.friends = friend["friends"];
+        val.followers = friend["followers"];
       });
       update();
     } catch (e) {
@@ -55,7 +55,7 @@ class FriendProfileViewModel extends GetxController {
   }
 
   void isMyFriendCheck () {
-    user.value.friends.forEach((element) { 
+    user.value.followers.forEach((element) { 
       if(element == box.read("userUID")) {
         isMyFriend.value = true;
         update();

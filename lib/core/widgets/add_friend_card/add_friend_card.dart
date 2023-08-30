@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/firebase/firebase_firestore.dart';
-import 'package:gout_app/view/friend/view/friend_profile_view.dart';
-import 'package:gout_app/view/search/viewmodel/serach_view_model.dart';
+import 'package:gout_app/view/friend/profile/view/friend_profile_view.dart';
 
-class AddFriendCard extends StatelessWidget {
-  AddFriendCard({super.key, required this.controller, required this.index, required this.id});
+class FriendCard extends StatelessWidget {
+  FriendCard({super.key, required this.nickname, required this.name, required this.id, required this.imageURL});
   
   final firestore = Get.put(FirebaseFirestoreController());
-  int index;
+  String nickname;
+  String name;
   String id;
-  final SearchViewModel controller;
+  String imageURL;
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +25,13 @@ class AddFriendCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: Get.width * .03, vertical: Get.height * .01),
-              child: const CircleAvatar(
+              child: CircleAvatar(
                 backgroundColor: ColorConstants.goutMainColor,
                 minRadius: 25,
                 maxRadius: 25,
                 child: CircleAvatar(
-                  foregroundImage: AssetImage("assets/images/me.png"),
+                  backgroundImage: const AssetImage("assets/images/no_profile_photo.png"),
+                  foregroundImage: imageURL.isEmpty ? null : NetworkImage(imageURL),
                   minRadius: 24,
                   maxRadius: 24,
                 ),
@@ -40,11 +41,11 @@ class AddFriendCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  controller.userList[index].nickname!,
+                  nickname,
                   style: const TextStyle(color: ColorConstants.white, fontSize: 16),
                 ),
                 Text(
-                  controller.userList[index].name!,
+                  name,
                   style: const TextStyle(color: ColorConstants.goutWhite, fontSize: 12),
                 ),
               ],

@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gout_app/core/firebase/firebase_firestore.dart';
 import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
+import 'package:gout_app/view/create/model/create_model.dart';
 
 class CreateViewModel extends GetxController {
     final firebaseFirestore = Get.put(FirebaseFirestoreController());
@@ -38,13 +38,9 @@ class CreateViewModel extends GetxController {
       }
   }
 
-  Future<void> createEvent() async {
+  Future<void> createEvent(CreateModel model) async {
     try {
-      var choosedDate = Timestamp.fromDate(DateTime(
-        currentDate.value.year, currentDate.value.month, currentDate.value.day, 
-        currentTime.value.hour, currentTime.value.minute
-        ));
-        firebaseFirestore.createAnEvent(tecEventTitle.text, tecEventDescription.text, choosedDate);
+        firebaseFirestore.createAnEvent(model);
     } catch (e) {
       errorSnackbar("CreateViewModel, createEventERROR: ", "$e");
     }

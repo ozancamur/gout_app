@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/add_friend_card/add_friend_card.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
-import 'package:gout_app/view/search/viewmodel/serach_view_model.dart';
+import 'package:gout_app/view/search/viewmodel/search_view_model.dart';
 
 class SearchView extends StatelessWidget {
   SearchView({super.key});
@@ -174,8 +174,14 @@ class SearchView extends StatelessWidget {
         : ListView.builder(
             shrinkWrap: true,
             itemCount: controller.userList.length,
+            prototypeItem: FriendCard(nickname: "ozancamur", name: "Ozan Camur", id: "id", imageURL: ""),
             itemBuilder: (context, index) {
-              return AddFriendCard(controller: controller, index: index, id: controller.userList[index].id!);
+              return FriendCard(
+                  nickname: controller.userList[index].nickname!,
+                  name: controller.userList[index].name!,
+                  id: controller.userList[index].id!,
+                  imageURL: controller.userList[index].imageURL!,
+                  );
             },
           ));
   }

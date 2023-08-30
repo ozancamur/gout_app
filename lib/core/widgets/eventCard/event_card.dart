@@ -110,7 +110,6 @@ class EventCard extends StatelessWidget {
                 size: 17,
               ),
               onPressed: () { 
-                
                 Get.to( () => DetailView(eventId: eventId,createrName: createrName,));
               },
             ),

@@ -5,8 +5,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
 import 'package:gout_app/core/widgets/eventCard/event_card.dart';
-import 'package:gout_app/view/friend/view/request_view.dart';
-import 'package:gout_app/view/friend/view/friends_view.dart';
+import 'package:gout_app/view/friend/request/view/request_view.dart';
+import 'package:gout_app/view/friend/friends/view/friends_view.dart';
 import 'package:gout_app/view/proile/viewmodel/profile_view_model.dart';
 
 class ProfileView extends StatelessWidget {
@@ -21,6 +21,7 @@ class ProfileView extends StatelessWidget {
       builder: (controller) {
         controller.getUserEvents(box.read("userUID"));
         controller.getUserInfo();
+
         return Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: ColorConstants.black,
@@ -39,42 +40,59 @@ class ProfileView extends StatelessWidget {
       width: Get.width,
       child: Stack(
         children: [
-          _eventField(),
+          _userEventsField(),
           _userCard(),
         ],
       ),
     );
   }
 
-  Widget _eventField() {
+  Widget _userEventsField() {
     return Positioned(
       top: Get.height * .32,
       left: Get.width * .05,
       right: Get.width * .05,
-      child: Container(
-        height: Get.height * .55,
-        width: Get.width,
-        decoration: const BoxDecoration(color: ColorConstants.black),
-        child: ListView.builder(
-          itemCount: controller.userEventList.length,
-          itemBuilder: (context, index) {
-            DateTime date = controller.userEventList[index].date.toDate();
-            String month = controller.monthMap[date.month]!;
-            String day;
-            date.day < 10 ? day = "0${date.day}" : day = "${date.day}";
-            return EventCard(
-              month: month,
-              day: day,
-              eventTitle: controller.userEventList[index].eventTitle,
-              nickname: controller.profileUserModel.value.nickname,
-              eventId: controller.userEventList[index].id,
-              createrName: controller.profileUserModel.value.name,
-            );
-          },
-        ),
-      ),
+      child: SizedBox(
+          height: Get.height * .55,
+          width: Get.width,
+          child: Obx(
+            () => controller.userEventList.isEmpty
+                ? const Text(
+                    "not found event",
+                    style: TextStyle(color: ColorConstants.goutWhite),
+                  )
+                : ListView.builder(
+                    itemCount: controller.userEventList.length,
+                    prototypeItem: const EventCard(
+                        month: "June",
+                        day: "10",
+                        eventTitle: "never mind",
+                        nickname: "ozancamur",
+                        eventId: "eventId",
+                        createrName: "Ozan Camur"),
+                    itemBuilder: (context, index) {
+                      DateTime date =
+                          controller.userEventList[index].date.toDate();
+                      String month = controller.monthMap[date.month]!;
+                      String day;
+                      date.day < 10
+                          ? day = "0${date.day}"
+                          : day = "${date.day}";
+                      return EventCard(
+                        month: month,
+                        day: day,
+                        eventTitle: controller.userEventList[index].eventTitle,
+                        nickname: controller.profileUserModel.value.nickname,
+                        eventId: controller.userEventList[index].id,
+                        createrName: controller.profileUserModel.value.name,
+                      );
+                    },
+                  ),
+          )),
     );
   }
+
+ 
 
   Widget _userCard() {
     return Container(
@@ -92,25 +110,38 @@ class ProfileView extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: Get.width * .05),
+              padding: EdgeInsets.only(top: Get.width * .04),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // ! USER IMAGE
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: Get.width * .05),
-                    child: Container(
-                      height: Get.height * .15,
-                      width: Get.width * .3,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: ColorConstants.backgrounColor),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.asset(
-                          "assets/images/me.png",
-                          fit: BoxFit.cover,
-                        ),
+                  GestureDetector(
+                    onTap: () {
+                      showPicker();
+                    },
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: Get.width * .05),
+                      child: Container(
+                        height: Get.height * .15,
+                        width: Get.width * .3,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: ColorConstants.backgrounColor),
+                        child: Obx(() => ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: controller
+                                      .profileUserModel.value.photoURL.isEmpty
+                                  ? Image.asset(
+                                      "assets/images/no_profile_photo.png",
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.network(
+                                      controller
+                                          .profileUserModel.value.photoURL,
+                                      fit: BoxFit.cover,
+                                    ),
+                            )),
                       ),
                     ),
                   ),
@@ -146,7 +177,9 @@ class ProfileView extends StatelessWidget {
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        Get.to(() => RequestView());
+                        Get.to(() => RequestView(
+                              list: controller.profileUserModel.value.requests,
+                            ));
                       },
                       child: SizedBox(
                         height: Get.height * .2,
@@ -174,7 +207,7 @@ class ProfileView extends StatelessWidget {
                             ),
                             // ! COUNT OF FRIENDS REQUEST
                             if (controller
-                                .profileUserModel.value.friendRequest.isEmpty)
+                                .profileUserModel.value.requests.isEmpty)
                               const SizedBox()
                             else
                               Positioned(
@@ -191,7 +224,7 @@ class ProfileView extends StatelessWidget {
                                           child: Center(
                                             child: Text(
                                               controller.profileUserModel.value
-                                                  .friendRequest.length
+                                                  .requests.length
                                                   .toString(),
                                               style: const TextStyle(
                                                   fontSize: 12,
@@ -209,48 +242,120 @@ class ProfileView extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: Get.height * .01),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // ! POST COUNT
-                  Column(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                
+                //! POST COUNT
+                Column(
+                  children: [
+                    Text(
+                      controller.userEventList.length.toString(),
+                      style: const TextStyle(color: ColorConstants.white),
+                    ),
+                    const Text(
+                      "Posts",
+                      style: TextStyle(color: ColorConstants.white),
+                    ),
+                  
+                  ],
+                ),
+                // ! FRIENDS COUNT
+                InkWell(
+                  onTap: () {
+                    Get.to(() => FriendsView(
+                        list: controller.profileUserModel.value.followers));
+                  },
+                  child: Column(
                     children: [
                       Text(
-                        controller.userEventList.length.toString(),
+                        controller.profileUserModel.value.followers.length
+                            .toString(),
                         style: const TextStyle(color: ColorConstants.white),
                       ),
                       const Text(
-                        "Posts",
+                        "Friends",
                         style: TextStyle(color: ColorConstants.white),
                       ),
                     ],
                   ),
-                  // ! FRIENDS COUNT
-                  InkWell(
-                    onTap: () {
-                      Get.to(() => FriendsView());
-                    },
-                    child: Column(
-                      children: [
-                        Text(
-                          controller.profileUserModel.value.friends.length
-                              .toString(),
-                          style: const TextStyle(color: ColorConstants.white),
-                        ),
-                        const Text(
-                          "Friends",
-                          style: TextStyle(color: ColorConstants.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             )
           ],
         ),
+      ),
+    );
+  }
+
+
+
+
+
+  Future showPicker() {
+    return Get.dialog(
+      Center(
+        child: SizedBox(
+            height: Get.height * .22,
+            width: Get.width * .4,
+            child: Material(
+              borderRadius: BorderRadius.circular(30),
+              color: ColorConstants.goutWhite,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: Get.height * .02),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: Get.width * .3,
+                        height: Get.height * .1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                controller.pickImageFromGallery();
+                              },
+                              icon: const Icon(
+                                Icons.photo_library,
+                                color: ColorConstants.black,
+                                size: 30,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                controller.pickImageFromCamera();
+                              },
+                              icon: const Icon(
+                                Icons.photo_camera,
+                                color: ColorConstants.black,
+                                size: 30,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorConstants.black,
+                          ),
+                          onPressed: () {
+                            controller.changeProfileImage();
+                          },
+                          child: const Text(
+                            "upload",
+                            style: TextStyle(
+                                color: ColorConstants.goutWhite,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17),
+                          ))
+                    ],
+                  ),
+                ),
+              ),
+            )),
       ),
     );
   }

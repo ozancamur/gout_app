@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // ignore: unused_import
@@ -5,12 +6,14 @@ import 'package:get_storage/get_storage.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/appBar/gout_appbar.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
+import 'package:gout_app/view/create/model/create_model.dart';
 import 'package:gout_app/view/create/viewmodel/create_view_model.dart';
 
 class CreateView extends StatelessWidget {
   CreateView({super.key});
 
   final controller = Get.put(CreateViewModel());
+  final box = GetStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -137,12 +140,26 @@ class CreateView extends StatelessWidget {
   }
 
   Widget _buttonField() {
+    var choosedDate = Timestamp.fromDate(DateTime(
+        controller.currentDate.value.year, controller.currentDate.value.month, controller.currentDate.value.day, 
+        controller.currentTime.value.hour, controller.currentTime.value.minute
+        ));
     return Padding(
       padding:
           EdgeInsets.only(top: Get.height * .05, bottom: Get.height * .025),
       child: InkWell(
         onTap: () {
-          controller.createEvent();
+          controller.createEvent(
+            CreateModel(
+              arrivals: [],
+              createdOnDate: Timestamp.fromDate(DateTime.now()),
+              createrId: box.read("userUID"),
+              date: choosedDate,
+              eventDescription: controller.tecEventDescription.text,
+              eventTitle: controller.tecEventTitle.text,
+              invited: [], 
+            ),
+          );
         },
         child: Container(
           width: Get.width,
@@ -163,5 +180,4 @@ class CreateView extends StatelessWidget {
       ),
     );
   }
-
 }

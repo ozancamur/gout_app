@@ -1,23 +1,22 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
-import 'package:gout_app/core/firebase/firebase_firestore.dart';
 import 'package:gout_app/core/widgets/appBar/gout_appbar.dart';
-import 'package:gout_app/view/friend/viewmodel/request_view_model.dart';
-import 'package:gout_app/view/proile/viewmodel/profile_view_model.dart';
+import 'package:gout_app/view/friend/request/viewmodel/request_view_model.dart';
 
 class RequestView extends StatelessWidget {
-  RequestView({super.key});
-  final profileController = Get.put(ProfileViewModel());
-  final controller = Get.put(RequestViewModel());
-  final firestore = Get.put(FirebaseFirestoreController());
+  RequestView({super.key, required this.list});
+  List list;
+  final controller = Get.put(RequestViewModel());  
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<RequestViewModel>(
       init: RequestViewModel(),
       builder: (controller) {
-        controller.getFriendRequest();
+        controller.getFriendRequest(list);
         return SafeArea(
           child: Scaffold(
             backgroundColor: ColorConstants.black,
@@ -115,7 +114,7 @@ class RequestView extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: Get.width * .02),
           child: InkWell(
             onTap: () {
-              firestore.acceptFriendRequest(id);
+              controller.acceptRequest(id);
             },
             child: Container(
               height: Get.height * .05,
@@ -136,7 +135,7 @@ class RequestView extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: Get.width * .02),
           child: InkWell(
             onTap: () {
-              firestore.cancelFriendRequest(id);
+              controller.cancelRequest(id);
               
             },
             child: Container(

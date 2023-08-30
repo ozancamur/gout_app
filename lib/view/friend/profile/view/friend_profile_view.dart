@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
 import 'package:gout_app/core/widgets/eventCard/event_card.dart';
-import 'package:gout_app/view/friend/viewmodel/friend_profile_view_model.dart';
+import 'package:gout_app/view/friend/profile/viewmodel/friend_profile_view_model.dart';
 
 class FriendProfileView extends StatelessWidget {
   FriendProfileView({required this.id, super.key});
@@ -170,7 +170,7 @@ class FriendProfileView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          controller.user.value.friends.length.toString(),
+                          controller.user.value.followers.length.toString(),
                           style: const TextStyle(color: ColorConstants.white),
                         ),
                         const Text(

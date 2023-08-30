@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:gout_app/core/enum/firebase_enum.dart';
 import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
 import 'package:gout_app/view/home/model/home_model.dart';
@@ -8,7 +9,8 @@ class HomeViewModel extends GetxController {
   List<HomeModel> eventsList = <HomeModel>[].obs;
   List<String> nickname = <String>[].obs;
   List<String> name = <String>[].obs;
-
+  final box = GetStorage();
+  var imageURL = "https://firebasestorage.googleapis.com/v0/b/gout-app-1c271.appspot.com/o/userPhotos%2FZR2YjhmK4xUhtDCalVjVqK9MPnG2%2F1000000036.jpg%2Fimages?alt=media&token=ad58af3f-8cfe-49f7-9378-ea9af41734df".obs;
   
 
   var isLoading = false.obs;
@@ -47,6 +49,10 @@ class HomeViewModel extends GetxController {
       errorSnackbar("HomeViewModel_getEvents_ERROR: ", "$e");
     }
     isLoading.value = true;
+  }
+
+  void getImage() {
+    imageURL.value = box.read("imageURL");
   }
 
   final Map<int, String> monthMap = {

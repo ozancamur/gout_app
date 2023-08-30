@@ -8,8 +8,8 @@ import 'package:gout_app/view/home/viewmodel/home_view_model.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({super.key});
-
   final controller = Get.put(HomeViewModel());
+  
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +18,7 @@ class HomeView extends StatelessWidget {
       initState: (_) {},
       builder: (controller) {
         controller.getEvents();
+        controller.getImage();
         return SafeArea(
           child: Scaffold(
               backgroundColor: ColorConstants.black,
@@ -76,14 +77,15 @@ class HomeView extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.only(top: Get.height * .06),
-              child: const CircleAvatar(
+              child: CircleAvatar(
                 backgroundColor: ColorConstants.goutMainColor,
                 minRadius: 21.75,
                 maxRadius: 28.75,
                 child: CircleAvatar(
-                  foregroundImage: AssetImage("assets/images/me.png"),
                   minRadius: 20,
                   maxRadius: 27,
+                  backgroundImage: const AssetImage("assets/images/no_profile_photo.png"),
+                  foregroundImage: controller.imageURL.value.isEmpty ? null : NetworkImage(controller.imageURL.value)
                 ),
               ),
             )
@@ -98,9 +100,11 @@ class HomeView extends StatelessWidget {
       height: Get.height * .751,
       width: Get.width * .87,
       child: Obx(
-        () => ListView.builder(
+        () => controller.eventsList.isEmpty ? const Center(child: Text("not found any event"),) 
+        : ListView.builder(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           itemCount: controller.eventsList.length,
+          prototypeItem: const EventCard(month: "June", day: "10", eventTitle: "never mind", nickname: "ozancamur", eventId: "Ozan Camur", createrName: "createrName"),
           itemBuilder: (context, index) {
             if(controller.eventsList != 0) controller.getCreaterNickname(controller.eventsList[index].createrId);
             DateTime date = controller.eventsList[index].date.toDate();
@@ -108,14 +112,7 @@ class HomeView extends StatelessWidget {
             String day;
             date.day < 10 ? day = "0${date.day}" : day = "${date.day}";
             return controller.nickname.isEmpty 
-                ? EventCard(
-                    day: day,
-                    month: month!,
-                    eventTitle: controller.eventsList[index].eventTitle,
-                    nickname: "@",
-                    eventId: controller.eventsList[index].id,
-                    createrName: "",
-                  )
+                ? const Text("loading events")
                 : EventCard(
                     day: day,
                     month: month!,
