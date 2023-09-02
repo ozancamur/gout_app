@@ -21,22 +21,29 @@ class FriendsViewModel extends GetxController {
   Future<void> getFriends(List list) async {
     isLoading.value = true;
     try {
-      list.forEach((element) async {
-        friendsList.clear();
-        DocumentSnapshot friend =
-            await FirebaseCollectionsEnum.user.col.doc(element).get();
-        friendsList.add(
-          FriendUserModel(
-            id: friend.id,
-            name: friend["name"],
-            nickname: friend["nickname"],
-            followers: friend["followers"],
-          ),
-        );
-      });
+      list.forEach(
+        (element) async {
+          friendsList.clear();
+          DocumentSnapshot friend =
+              await FirebaseCollectionsEnum.user.col.doc(element).get();
+          friendsList.add(
+            FriendUserModel(
+              id: friend.id,
+              name: friend["name"],
+              nickname: friend["nickname"],
+              followers: friend["followers"],
+            ),
+          );
+        },
+      );
     } catch (e) {
       errorSnackbar("getFriends ERROR:", "$e");
     }
     isLoading.value = false;
+  }
+
+  Future<void> unfollowFriend(String id, index) async {
+    firestore.unfollowTheUser(id);
+    friendsList.removeAt(index);
   }
 }

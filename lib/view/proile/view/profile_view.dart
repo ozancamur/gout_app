@@ -183,12 +183,12 @@ class ProfileView extends StatelessWidget {
                       },
                       child: SizedBox(
                         height: Get.height * .2,
-                        width: Get.width * .1,
+                        width: Get.width * .3,
                         child: Stack(
                           children: [
                             // ! ICON OF FRIENDS REQUEST
                             Padding(
-                              padding: EdgeInsets.only(top: Get.height * .0075),
+                              padding: EdgeInsets.only(top: Get.height * .0075, left: Get.width*.185),
                               child: Container(
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
@@ -211,7 +211,7 @@ class ProfileView extends StatelessWidget {
                               const SizedBox()
                             else
                               Positioned(
-                                left: Get.width * .05,
+                                left: Get.width * .24,
                                 child: SizedBox(
                                   width: Get.width * .05,
                                   child: Padding(

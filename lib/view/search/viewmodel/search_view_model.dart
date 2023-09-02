@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/enum/firebase_enum.dart';
 import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
@@ -7,6 +8,7 @@ import 'package:gout_app/view/search/model/search_event_model.dart';
 import 'package:gout_app/view/search/model/search_user_model.dart';
 
 class SearchViewModel extends GetxController {
+  final box = GetStorage();
 
   List<Color> unactiveColor = [
     ColorConstants.backgrounColor,
@@ -37,7 +39,9 @@ class SearchViewModel extends GetxController {
           .get()
           .then((value) {
         for (final val in value.docs) {
-          userList.add(SearchUserModel(id: val.id,name: val["name"], nickname: val["nickname"], imageURL: val["profilePhotoPath"]));
+          if(val.id != box.read("userUID")) {
+            userList.add(SearchUserModel(id: val.id,name: val["name"], nickname: val["nickname"], imageURL: val["photoURL"]));
+          }
         }
       });
       update();

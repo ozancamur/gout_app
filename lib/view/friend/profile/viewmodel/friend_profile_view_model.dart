@@ -34,7 +34,7 @@ class FriendProfileViewModel extends GetxController {
     id: "",
     name: "",
     nickname: "",
-    followers: [], 
+    followers: [],
   ).obs;
   List<FriendEventModel> userEvents = <FriendEventModel>[].obs;
 
@@ -54,37 +54,39 @@ class FriendProfileViewModel extends GetxController {
     }
   }
 
-  void isMyFriendCheck () {
-    user.value.followers.forEach((element) { 
-      if(element == box.read("userUID")) {
-        isMyFriend.value = true;
-        update();
-      }
-    });
-  }
-
-  Future<void> getFriendsEvents(String id) async {
+    Future<void> getFriendEvents(String id) async {
+    isLoading.value = true;
     try {
-      QuerySnapshot events = await FirebaseFirestore.instance
-          .collection("user")
-          .doc(id)
+      await FirebaseFirestore.instance
           .collection("event")
-          .get();
-      userEvents.clear();
-      for (final event in events.docs) {
-        userEvents.add(
-          FriendEventModel(
-            id: id,
-            eventTitle: event["eventTitle"],
-            eventDescription: event["eventDescription"],
-            date: event["date"],
-          ),
-        );
-      }
-      update();
+          .where("createrId", isEqualTo: box.read("userUID"))
+          .get()
+          .then(
+        (events) {
+          userEvents.clear();
+          for (final event in events.docs) {
+            userEvents.add(
+              FriendEventModel(
+                id: event.id,
+                eventTitle: event["eventTitle"],
+                eventDescription: event["eventDescription"],
+                date: event["date"],
+              ),
+            );
+          }
+        },
+      );
     } catch (e) {
       errorSnackbar("ProfileController, getUserEvents ERROR: ", "$e");
     }
+    isLoading.value = false;
   }
 
+  Future<void> isMyFriendCheck(List ids) async {
+    if(ids.contains(box.read("userUID"))){
+      isMyFriend.value = true;
+    } else {
+      isMyFriend.value = false;
+    }
+  }
 }

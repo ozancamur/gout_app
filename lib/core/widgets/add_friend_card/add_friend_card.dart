@@ -38,6 +38,7 @@ class FriendCard extends StatelessWidget {
               ),
             ),
             Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(

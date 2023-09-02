@@ -35,11 +35,13 @@ class RequestViewModel extends GetxController {
     isLoading.value = false;
   }
 
-  void acceptRequest(String id) {
+  void acceptRequest(String id,int index) {
     firestore.acceptFriendRequest(id);
+    friendRequestList.removeAt(index);
   }
 
-  void cancelRequest(String id) {
+  void cancelRequest(String id,int index) {
     firestore.cancelFriendRequest(id);
+    friendRequestList.removeAt(index);
   }
 }

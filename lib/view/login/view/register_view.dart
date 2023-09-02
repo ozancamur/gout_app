@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
-import 'package:gout_app/core/widgets/appbar/gout_appbar.dart';
 import 'package:gout_app/view/login/viewmodel/register_view_model.dart';
 
 class RegisterView extends StatelessWidget {
@@ -20,9 +19,8 @@ class RegisterView extends StatelessWidget {
           child: Scaffold(
             resizeToAvoidBottomInset: false,
             backgroundColor: ColorConstants.black,
-            appBar: goutAppBar("Sign Up"),
             body: Padding(
-              padding: EdgeInsets.symmetric(horizontal: Get.width * .05),
+              padding: EdgeInsets.symmetric(horizontal: Get.width * .05, vertical: Get.height*.04),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

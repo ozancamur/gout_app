@@ -19,8 +19,7 @@ class FriendProfileView extends StatelessWidget {
       init: FriendProfileViewModel(),
       builder: (controller) {
         controller.getFriendInfo(id);
-        controller.getFriendsEvents(id);
-        controller.isMyFriendCheck();
+        controller.isMyFriendCheck(controller.user.value.followers);
         return SafeArea(
           child: Scaffold(
             bottomNavigationBar: goutBottomAppBar(pageId: 1),
@@ -58,13 +57,10 @@ class FriendProfileView extends StatelessWidget {
         child: ListView.builder(
           itemCount: controller.userEvents.length,
           itemBuilder: (context, index) {
-             DateTime date =
-                      controller.userEvents[index].date.toDate();
-                  String month = controller.monthMap[date.month]!;
-                  String day;
-                  date.day < 10
-                      ? day = "0${date.day}"
-                      : day = "${date.day}";
+            DateTime date = controller.userEvents[index].date.toDate();
+            String month = controller.monthMap[date.month]!;
+            String day;
+            date.day < 10 ? day = "0${date.day}" : day = "${date.day}";
             return EventCard(
               month: month,
               day: day,
@@ -94,6 +90,11 @@ class FriendProfileView extends StatelessWidget {
           children: [
             Stack(
               children: [
+                IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: const Icon(Icons.arrow_back, color: ColorConstants.goutWhite, size: 20,)),
                 Center(
                   child: Container(
                     height: Get.height * .2,
@@ -111,7 +112,7 @@ class FriendProfileView extends StatelessWidget {
                     children: [
                       // ! USER IMAGE
                       Padding(
-                        padding: EdgeInsets.only(top: Get.height*.015),
+                        padding: EdgeInsets.only(top: Get.height * .015),
                         child: SizedBox(
                           height: Get.height * .1,
                           width: Get.width * .2,
@@ -185,49 +186,49 @@ class FriendProfileView extends StatelessWidget {
             ),
             //! FOLLOW BUTTON
             Padding(
-              padding: EdgeInsets.only(top: Get.height*.015,bottom: Get.height * .015),
-              child: controller.isMyFriend.value 
-              ?  InkWell(
-                onTap: () {},
-                child: Container(
-                  height: Get.height * .03,
-                  width: Get.width * .25,
-                  decoration: BoxDecoration(
-                      color: ColorConstants.goutMainDarkColor,
-                      borderRadius: BorderRadius.circular(30)),
-                  child: const Center(
-                    child: Text(
-                      "unfollow",
-                      style: TextStyle(
-                        color: ColorConstants.white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ), 
-                ),
-              )
-              : InkWell(
-                onTap: () {
-                  controller.firestore.followTheUser(id);
-                },
-                child: Container(
-                  height: Get.height * .03,
-                  width: Get.width * .25,
-                  decoration: BoxDecoration(
-                      color: ColorConstants.goutMainDarkColor,
-                      borderRadius: BorderRadius.circular(30)),
-                  child: const Center(
-                    child: Text(
-                      "follow",
-                      style: TextStyle(
-                        color: ColorConstants.white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ), 
-                ),
-              )
-            )
+                padding: EdgeInsets.only(
+                    top: Get.height * .015, bottom: Get.height * .015),
+                child: controller.isMyFriend.value
+                    ? InkWell(
+                        onTap: () {},
+                        child: Container(
+                          height: Get.height * .03,
+                          width: Get.width * .25,
+                          decoration: BoxDecoration(
+                              color: ColorConstants.goutMainDarkColor,
+                              borderRadius: BorderRadius.circular(30)),
+                          child: const Center(
+                            child: Text(
+                                    "unfollow",
+                                    style: TextStyle(
+                                      color: ColorConstants.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  )
+                          ),
+                        ),
+                      )
+                    : InkWell(
+                        onTap: () {
+                          controller.firestore.followTheUser(id);
+                        },
+                        child: Container(
+                          height: Get.height * .03,
+                          width: Get.width * .25,
+                          decoration: BoxDecoration(
+                              color: ColorConstants.goutMainColor,
+                              borderRadius: BorderRadius.circular(30)),
+                          child: const Center(
+                            child: Text(
+                              "follow",
+                              style: TextStyle(
+                                color: ColorConstants.white,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ))
           ],
         ),
       ),

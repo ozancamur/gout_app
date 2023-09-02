@@ -62,7 +62,7 @@ class FirebaseFirestoreController extends GetxController {
   Future<void> followTheUser(String id) async {
     try {
       await user.doc(id).update({
-        "friendRequest": FieldValue.arrayUnion([box.read("userUID")])
+        "requests": FieldValue.arrayUnion([box.read("userUID")])
       });
     } catch (e) {
       errorSnackbar("FirebaseFireStoreController, followTheUser ERROR:", "$e");
@@ -72,31 +72,31 @@ class FirebaseFirestoreController extends GetxController {
   Future<void> unfollowTheUser(String id) async {
     try {
       await user.doc(id).update({
-        "friends": FieldValue.arrayRemove([box.read("userUID")])
+        "followers": FieldValue.arrayRemove([box.read("userUID")])
       });
       await user.doc(box.read("userUID")).update({
-        "friends": FieldValue.arrayRemove([id])
+        "followers": FieldValue.arrayRemove([id])
       });
     } catch (e) {
       errorSnackbar("FirebaseFireStoreController, followTheUser ERROR:", "$e");
     }
   }
 
-  void acceptFriendRequest(String id)  {
-    user.doc(box.read("userUID")).update({
-        "friendRequest": FieldValue.arrayRemove([id.trim()]),
-        "followers": FieldValue.arrayUnion([id.trim()])
+  Future<void> acceptFriendRequest(String id) async {
+    await user.doc(box.read("userUID")).update({
+        "requests": FieldValue.arrayRemove([id.trim()]),
+        "followers": FieldValue.arrayUnion([id])
     });
 
-    user.doc(id).update({
+    await user.doc(id).update({
       "followers": FieldValue.arrayUnion([box.read("userUID")]) 
     });
   }
 
-  void cancelFriendRequest(String id) {
-      user.doc(box.read("userUID")).update(
+  Future<void> cancelFriendRequest(String id) async {
+      await user.doc(box.read("userUID")).update(
         {
-          "friendRequest": FieldValue.arrayRemove([id.trim()])
+          "requests": FieldValue.arrayRemove([id])
         },
       );
   }
@@ -178,4 +178,6 @@ class FirebaseFirestoreController extends GetxController {
     });
 
   }
+
+
 }

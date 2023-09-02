@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/appBar/gout_appbar.dart';
 import 'package:gout_app/view/friend/friends/viewmodel/friends_view_model.dart';
+import 'package:gout_app/view/friend/profile/view/friend_profile_view.dart';
 import 'package:gout_app/view/proile/viewmodel/profile_view_model.dart';
 
 class FriendsView extends StatelessWidget {
@@ -38,15 +39,18 @@ class FriendsView extends StatelessWidget {
         () => ListView.builder(
           itemCount: controller.friendsList.length,
           itemBuilder: (context, index) {
-            return _friendsCard(controller.friendsList[index].name,
-                controller.friendsList[index].nickname);
+            return _friendsCard(
+                controller.friendsList[index].name,
+                controller.friendsList[index].nickname,
+                controller.friendsList[index].id,
+                index);
           },
         ),
       ),
     );
   }
 
-  Widget _friendsCard(String name, String nickname) {
+  Widget _friendsCard(String name, String nickname, String id, int index) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -57,6 +61,7 @@ class FriendsView extends StatelessWidget {
           child: InkWell(
             onTap: () {
               // ? go to user profile
+              Get.off(() => FriendProfileView(id: id,));
             },
             child: Container(
                 height: Get.height * .08,
@@ -112,7 +117,22 @@ class FriendsView extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: Get.width * .02),
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              Get.defaultDialog(
+                title: "$name",
+                  backgroundColor: ColorConstants.white,
+                  middleText: "are you sure to unfollow?",
+                  titleStyle: const TextStyle(
+                    fontSize: 17.5,
+                    color: ColorConstants.backgrounColor,
+                  ),
+                  onConfirm: () {
+                    controller.unfollowFriend(id, index);
+                    Get.back();
+                  },
+                  onCancel: () =>  Get.back(),
+                  );
+            },
             child: Container(
               height: Get.height * .035,
               width: Get.width * .3,

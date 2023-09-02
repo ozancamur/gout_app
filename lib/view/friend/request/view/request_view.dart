@@ -40,6 +40,7 @@ class RequestView extends StatelessWidget {
               id: controller.friendRequestList[index].id,
               name: controller.friendRequestList[index].name,
               nickname: controller.friendRequestList[index].nickname,
+              index: index
             );
           },
         ),
@@ -48,7 +49,7 @@ class RequestView extends StatelessWidget {
   }
 
   Widget _friendRequestCard(
-      {required String id, required String name, required String nickname}) {
+      {required String id, required String name, required String nickname, required int index}) {
     return Row(
       children: [
         // ! USER INFO
@@ -114,7 +115,7 @@ class RequestView extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: Get.width * .02),
           child: InkWell(
             onTap: () {
-              controller.acceptRequest(id);
+              controller.acceptRequest(id, index);
             },
             child: Container(
               height: Get.height * .05,
@@ -135,7 +136,7 @@ class RequestView extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: Get.width * .02),
           child: InkWell(
             onTap: () {
-              controller.cancelRequest(id);
+              controller.cancelRequest(id, index);
               
             },
             child: Container(
