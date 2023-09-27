@@ -10,6 +10,7 @@ class DetailModel {
   String eventID;
   String eventTitle;
   List invited;
+  GeoPoint location;
   DetailModel({
     required this.arrivals,
     required this.createdOnDate,
@@ -19,6 +20,7 @@ class DetailModel {
     required this.eventID,
     required this.eventTitle,
     required this.invited,
+    required this.location
   });
 
 

@@ -9,6 +9,7 @@ class CreateModel {
   String eventDescription;
   String eventTitle;
   List invited;
+  GeoPoint location;
   CreateModel({
     required this.arrivals,
     required this.createdOnDate,
@@ -17,5 +18,6 @@ class CreateModel {
     required this.eventDescription,
     required this.eventTitle,
     required this.invited,
+    required this.location,
   });
 }

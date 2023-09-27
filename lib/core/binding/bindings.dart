@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:gout_app/core/firebase/firebase_auth_controller.dart';
-import 'package:gout_app/core/firebase/firebase_firestore.dart';
-import 'package:gout_app/core/firebase/firebase_storage_controller.dart';
+import 'package:gout_app/core/services/firebase/firebase_auth_controller.dart';
+import 'package:gout_app/core/services/firebase/firebase_firestore.dart';
+import 'package:gout_app/core/services/firebase/firebase_storage_controller.dart';
 import 'package:gout_app/view/create/viewmodel/create_view_model.dart';
 import 'package:gout_app/view/detail/viewmodel/detail_view_model.dart';
 import 'package:gout_app/view/friend/friends/viewmodel/friends_view_model.dart';
@@ -29,8 +29,5 @@ class DataControllerBindings extends Bindings {
     Get.put<FriendsViewModel>(FriendsViewModel()); 
     Get.put<FriendProfileViewModel>(FriendProfileViewModel());
     Get.put<FirebaseStorageController>(FirebaseStorageController());
-    
-    
-    //Get.put<NotificationController>(NotificationController());
-}
+  }
 }

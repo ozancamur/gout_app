@@ -5,10 +5,12 @@ class FriendUserModel {
   String name;
   String nickname;
   List followers;
+  String photoURL;
   FriendUserModel({
     required this.id,
     required this.name,
     required this.nickname,
     required this.followers,
+    required this.photoURL
   });
 }

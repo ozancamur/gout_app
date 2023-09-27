@@ -1,18 +1,18 @@
 // ignore_for_file: must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/constant/color/color_constants.dart';
-import 'package:gout_app/core/firebase/firebase_firestore.dart';
+import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/services/firebase/firebase_firestore.dart';
 import 'package:gout_app/view/friend/profile/view/friend_profile_view.dart';
 
 class FriendCard extends StatelessWidget {
-  FriendCard({super.key, required this.nickname, required this.name, required this.id, required this.imageURL});
+  FriendCard({super.key, required this.nickname, required this.name, required this.id, required this.photoURL});
   
   final firestore = Get.put(FirebaseFirestoreController());
   String nickname;
   String name;
   String id;
-  String imageURL;
+  String photoURL;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class FriendCard extends StatelessWidget {
                 maxRadius: 25,
                 child: CircleAvatar(
                   backgroundImage: const AssetImage("assets/images/no_profile_photo.png"),
-                  foregroundImage: imageURL.isEmpty ? null : NetworkImage(imageURL),
+                  foregroundImage: photoURL.isEmpty ? null : NetworkImage(photoURL),
                   minRadius: 24,
                   maxRadius: 24,
                 ),

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/constant/color/color_constants.dart';
+import 'package:gout_app/core/services/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
 import 'package:gout_app/core/widgets/eventCard/event_card.dart';
 import 'package:gout_app/view/friend/profile/viewmodel/friend_profile_view_model.dart';
@@ -68,6 +68,7 @@ class FriendProfileView extends StatelessWidget {
               nickname: controller.user.value.nickname,
               eventId: controller.userEvents[index].id,
               createrName: controller.user.value.name,
+              createrId: controller.userEvents[index].createrId,
             );
           },
         ),
@@ -116,10 +117,11 @@ class FriendProfileView extends StatelessWidget {
                         child: SizedBox(
                           height: Get.height * .1,
                           width: Get.width * .2,
-                          child: const CircleAvatar(
-                            foregroundImage: AssetImage(
-                              "assets/images/me.png",
+                          child: CircleAvatar(
+                            backgroundImage: const AssetImage(
+                              "assets/images/no_profile_photo.png",
                             ),
+                            foregroundImage: NetworkImage(controller.user.value.photoURL),
                           ),
                         ),
                       ),
@@ -211,7 +213,7 @@ class FriendProfileView extends StatelessWidget {
                     : InkWell(
                         onTap: () {
                           controller.firestore.followTheUser(id);
-                        },
+                          },
                         child: Container(
                           height: Get.height * .03,
                           width: Get.width * .25,

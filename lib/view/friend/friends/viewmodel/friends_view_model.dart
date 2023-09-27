@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:gout_app/core/enum/firebase_enum.dart';
-import 'package:gout_app/core/firebase/firebase_firestore.dart';
+import 'package:gout_app/core/services/firebase/firebase_firestore.dart';
 import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
 import 'package:gout_app/view/friend/profile/model/friend_user_model.dart';
 import 'package:gout_app/view/proile/viewmodel/profile_view_model.dart';
@@ -22,16 +22,17 @@ class FriendsViewModel extends GetxController {
     isLoading.value = true;
     try {
       list.forEach(
-        (element) async {
+        (friendID) async {
           friendsList.clear();
           DocumentSnapshot friend =
-              await FirebaseCollectionsEnum.user.col.doc(element).get();
+              await FirebaseCollectionsEnum.user.col.doc(friendID).get();
           friendsList.add(
             FriendUserModel(
               id: friend.id,
               name: friend["name"],
               nickname: friend["nickname"],
               followers: friend["followers"],
+              photoURL: friend["photoURL"]
             ),
           );
         },

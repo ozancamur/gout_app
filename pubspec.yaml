@@ -32,15 +32,17 @@ dependencies:
     sdk: flutter
   get: ^4.6.5
   get_storage: ^2.1.1
-  awesome_notifications: ^0.7.4+1
-  awesome_notifications_fcm: ^0.7.4+1
   firebase_core: ^2.15.1
   cloud_firestore: ^4.9.0
   firebase_auth: ^4.8.0
   firebase_storage: ^11.2.6
   image_picker: ^1.0.2
   path: ^1.8.3
-  
+  google_maps_flutter: ^2.5.0
+  cloud_functions: ^4.4.0
+  awesome_notifications_fcm: ^0.7.4+1
+  awesome_notifications: ^0.7.4+1
+
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +70,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/logo/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

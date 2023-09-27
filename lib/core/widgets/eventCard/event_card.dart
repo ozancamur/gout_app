@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/constant/color/color_constants.dart';
+import 'package:gout_app/core/services/constant/color/color_constants.dart';
 import 'package:gout_app/view/detail/view/detail_view.dart';
 
 class EventCard extends StatelessWidget {
@@ -12,6 +12,7 @@ class EventCard extends StatelessWidget {
     required this.nickname,
     required this.eventId,
     required this.createrName,
+    required this.createrId
   });
 
   final String month;
@@ -20,6 +21,7 @@ class EventCard extends StatelessWidget {
   final String nickname;
   final String eventId;
   final String createrName;
+  final String createrId;
 
 
   @override
@@ -110,7 +112,8 @@ class EventCard extends StatelessWidget {
                 size: 17,
               ),
               onPressed: () { 
-                Get.to( () => DetailView(eventId: eventId,createrName: createrName,));
+
+                Get.to( () => DetailView(eventId: eventId,createrName: createrName, createrId: createrId,));
               },
             ),
           ],

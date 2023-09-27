@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:gout_app/core/enum/firebase_enum.dart';
-import 'package:gout_app/core/firebase/firebase_firestore.dart';
+import 'package:gout_app/core/services/firebase/firebase_firestore.dart';
 import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
 import 'package:gout_app/view/friend/friends/model/friend_event_model.dart';
 import 'package:gout_app/view/friend/profile/model/friend_user_model.dart';
@@ -35,6 +35,7 @@ class FriendProfileViewModel extends GetxController {
     name: "",
     nickname: "",
     followers: [],
+    photoURL: ""
   ).obs;
   List<FriendEventModel> userEvents = <FriendEventModel>[].obs;
 
@@ -47,6 +48,7 @@ class FriendProfileViewModel extends GetxController {
         val.name = friend["name"];
         val.nickname = friend["nickname"];
         val.followers = friend["followers"];
+        val.photoURL = friend["photoURL"];
       });
       update();
     } catch (e) {
@@ -54,7 +56,7 @@ class FriendProfileViewModel extends GetxController {
     }
   }
 
-    Future<void> getFriendEvents(String id) async {
+  Future<void> getFriendEvents(String id) async {
     isLoading.value = true;
     try {
       await FirebaseFirestore.instance
@@ -71,6 +73,7 @@ class FriendProfileViewModel extends GetxController {
                 eventTitle: event["eventTitle"],
                 eventDescription: event["eventDescription"],
                 date: event["date"],
+                createrId: event["createrId"]
               ),
             );
           }

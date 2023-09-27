@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:gout_app/core/enum/firebase_enum.dart';
-import 'package:gout_app/core/firebase/firebase_firestore.dart';
+import 'package:gout_app/core/services/firebase/firebase_firestore.dart';
 import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
 import 'package:gout_app/view/friend/request/model/request_model.dart';
 import 'package:gout_app/view/proile/viewmodel/profile_view_model.dart';

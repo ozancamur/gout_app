@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:gout_app/core/enum/firebase_enum.dart';
-import 'package:gout_app/core/firebase/firebase_storage_controller.dart';
+import 'package:gout_app/core/services/firebase/firebase_storage_controller.dart';
 import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
 import 'package:gout_app/view/proile/model/profile_event_model.dart';
 import 'package:gout_app/view/proile/model/profile_user_model.dart';
@@ -14,7 +14,6 @@ class ProfileViewModel extends GetxController {
   final storage = Get.put(FirebaseStorageController());
   final box = GetStorage();
   var isLoading = false.obs;
-
 
   final Map<int, String> monthMap = {
     01: "Jan",
@@ -32,17 +31,15 @@ class ProfileViewModel extends GetxController {
   };
 
   List<ProfileEventModel> userEventList = <ProfileEventModel>[].obs;
-  List<ProfileEventModel> userFavoriteEventsList = <ProfileEventModel>[].obs;
   Rx<ProfileUserModel> profileUserModel = ProfileUserModel(
           email: '',
           name: '',
           nickname: '',
-          password: '',
-          date: Timestamp(0, 0),
           followers: [],
           requests: [],
           favorites: [],
-          photoURL: '')
+          photoURL: '',
+          )
       .obs;
 
   Future<void> getUserEvents(String id) async {
@@ -62,6 +59,7 @@ class ProfileViewModel extends GetxController {
                 eventTitle: event["eventTitle"],
                 eventDescription: event["eventDescription"],
                 date: event["date"],
+                createrId: event["createrId"]
               ),
             );
           }
@@ -84,16 +82,15 @@ class ProfileViewModel extends GetxController {
           val!.email = user["email"];
           val.name = user["name"];
           val.nickname = user["nickname"];
-          val.password = user["password"];
           val.followers = user["followers"];
           val.requests = user["requests"];
-          val.favorites = user["favorites"];
           val.photoURL = user["photoURL"];
+          val.favorites = user["favorites"];
           update();
         },
       );
     } catch (e) {
-      errorSnackbar("ProfileController, getUserInfoERROR: ", "$e");
+      errorSnackbar("ProfileController, getUserInfo ERROR: ", "$e");
     }
     isLoading.value = false;
   }

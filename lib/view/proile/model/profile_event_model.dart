@@ -2,17 +2,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileEventModel {
-
-
   String id;
   String eventTitle;
   String eventDescription;
   Timestamp date;
+  String createrId;
   ProfileEventModel({
     required this.id,
     required this.eventTitle,
     required this.eventDescription,
     required this.date,
+    required this.createrId
   });
   
 }

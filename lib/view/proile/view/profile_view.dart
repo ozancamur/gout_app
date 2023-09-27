@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:gout_app/core/constant/color/color_constants.dart';
+import 'package:gout_app/core/services/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
 import 'package:gout_app/core/widgets/eventCard/event_card.dart';
 import 'package:gout_app/view/friend/request/view/request_view.dart';
@@ -21,7 +21,6 @@ class ProfileView extends StatelessWidget {
       builder: (controller) {
         controller.getUserEvents(box.read("userUID"));
         controller.getUserInfo();
-
         return Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: ColorConstants.black,
@@ -47,53 +46,6 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _userEventsField() {
-    return Positioned(
-      top: Get.height * .32,
-      left: Get.width * .05,
-      right: Get.width * .05,
-      child: SizedBox(
-          height: Get.height * .55,
-          width: Get.width,
-          child: Obx(
-            () => controller.userEventList.isEmpty
-                ? const Text(
-                    "not found event",
-                    style: TextStyle(color: ColorConstants.goutWhite),
-                  )
-                : ListView.builder(
-                    itemCount: controller.userEventList.length,
-                    prototypeItem: const EventCard(
-                        month: "June",
-                        day: "10",
-                        eventTitle: "never mind",
-                        nickname: "ozancamur",
-                        eventId: "eventId",
-                        createrName: "Ozan Camur"),
-                    itemBuilder: (context, index) {
-                      DateTime date =
-                          controller.userEventList[index].date.toDate();
-                      String month = controller.monthMap[date.month]!;
-                      String day;
-                      date.day < 10
-                          ? day = "0${date.day}"
-                          : day = "${date.day}";
-                      return EventCard(
-                        month: month,
-                        day: day,
-                        eventTitle: controller.userEventList[index].eventTitle,
-                        nickname: controller.profileUserModel.value.nickname,
-                        eventId: controller.userEventList[index].id,
-                        createrName: controller.profileUserModel.value.name,
-                      );
-                    },
-                  ),
-          )),
-    );
-  }
-
- 
-
   Widget _userCard() {
     return Container(
       height: Get.height * .37,
@@ -111,175 +63,155 @@ class ProfileView extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.only(top: Get.width * .04),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // ! USER IMAGE
-                  GestureDetector(
-                    onTap: () {
-                      showPicker();
-                    },
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: Get.width * .05),
-                      child: Container(
-                        height: Get.height * .15,
-                        width: Get.width * .3,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: ColorConstants.backgrounColor),
-                        child: Obx(() => ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: controller
-                                      .profileUserModel.value.photoURL.isEmpty
-                                  ? Image.asset(
-                                      "assets/images/no_profile_photo.png",
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.network(
-                                      controller
-                                          .profileUserModel.value.photoURL,
-                                      fit: BoxFit.cover,
-                                    ),
-                            )),
-                      ),
-                    ),
-                  ),
-                  // ! USER NAME AND NICKNAME
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: Get.height * .06),
-                    child: Obx(() => Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              controller.profileUserModel.value.name,
-                              style: const TextStyle(
-                                color: ColorConstants.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              "@${controller.profileUserModel.value.nickname}"
-                                  .toLowerCase(),
-                              style: const TextStyle(
-                                color: ColorConstants.grey,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        )),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: Get.width * .075,
-                    ),
-                    child: GestureDetector(
+              child: SizedBox(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ! USER IMAGE
+                    GestureDetector(
                       onTap: () {
-                        Get.to(() => RequestView(
-                              list: controller.profileUserModel.value.requests,
-                            ));
+                        userPhotoPicker();
                       },
-                      child: SizedBox(
-                        height: Get.height * .2,
-                        width: Get.width * .3,
-                        child: Stack(
-                          children: [
-                            // ! ICON OF FRIENDS REQUEST
-                            Padding(
-                              padding: EdgeInsets.only(top: Get.height * .0075, left: Get.width*.185),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                        width: 1.5,
-                                        color: ColorConstants.goutWhite)),
-                                child: Padding(
-                                  padding: EdgeInsets.all(Get.width * .015),
-                                  child: const Icon(
-                                    Icons.group,
-                                    color: ColorConstants.goutWhite,
-                                    size: 22,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            // ! COUNT OF FRIENDS REQUEST
-                            if (controller
-                                .profileUserModel.value.requests.isEmpty)
-                              const SizedBox()
-                            else
-                              Positioned(
-                                left: Get.width * .24,
-                                child: SizedBox(
-                                  width: Get.width * .05,
-                                  child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: Get.height * 0.005),
-                                      child: Container(
-                                          decoration: const BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.red),
-                                          child: Center(
-                                            child: Text(
-                                              controller.profileUserModel.value
-                                                  .requests.length
-                                                  .toString(),
-                                              style: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white),
-                                            ),
-                                          ))),
-                                ),
-                              )
-                          ],
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: Get.width * .04),
+                        child: Container(
+                          height: Get.height * .15,
+                          width: Get.width * .3,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: ColorConstants.backgrounColor),
+                          child: Obx(() => ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: controller
+                                        .profileUserModel.value.photoURL.isEmpty
+                                    ? Image.asset(
+                                        "assets/images/no_profile_photo.png",
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.network(
+                                        controller
+                                            .profileUserModel.value.photoURL,
+                                        fit: BoxFit.cover,
+                                      ),
+                              )),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    // ! USER NAME AND NICKNAME
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: Get.height * .06),
+                      child: Obx(() => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                controller.profileUserModel.value.name,
+                                style: const TextStyle(
+                                  color: ColorConstants.white,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                "@${controller.profileUserModel.value.nickname}"
+                                    .toLowerCase(),
+                                style: const TextStyle(
+                                  color: ColorConstants.grey,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          )),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: Get.width * .01,
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.to(() => RequestView(
+                                list: controller.profileUserModel.value.requests,
+                              ));
+                        },
+                        child: SizedBox(
+                          height: Get.height * .2,
+                          width: Get.width * .2,
+                          child: Stack(
+                            children: [
+                              // ! ICON OF FRIENDS REQUEST
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: Get.height * .0075,
+                                    left: Get.width * .05),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          width: 1.5,
+                                          color: ColorConstants.goutWhite)),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(Get.width * .015),
+                                    child: const Icon(
+                                      Icons.group,
+                                      color: ColorConstants.goutWhite,
+                                      size: 22,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // ! COUNT OF FRIENDS REQUEST
+                              if (controller
+                                  .profileUserModel.value.requests.isEmpty)
+                                const SizedBox()
+                              else
+                                Positioned(
+                                  left: Get.width * .1,
+                                  child: SizedBox(
+                                    width: Get.width * .05,
+                                    child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: Get.height * 0.005),
+                                        child: Container(
+                                            decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.red),
+                                            child: Center(
+                                              child: Text(
+                                                controller.profileUserModel.value
+                                                    .requests.length
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white),
+                                              ),
+                                            ))),
+                                  ),
+                                )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                
-                //! POST COUNT
-                Column(
-                  children: [
-                    Text(
-                      controller.userEventList.length.toString(),
-                      style: const TextStyle(color: ColorConstants.white),
-                    ),
-                    const Text(
-                      "Posts",
-                      style: TextStyle(color: ColorConstants.white),
-                    ),
-                  
-                  ],
-                ),
-                // ! FRIENDS COUNT
+                //* POST COUNT
+                userTab(controller.userEventList.length, "Posts"),
+                //* FRIENDS COUNT
                 InkWell(
-                  onTap: () {
-                    Get.to(() => FriendsView(
-                        list: controller.profileUserModel.value.followers));
-                  },
-                  child: Column(
-                    children: [
-                      Text(
-                        controller.profileUserModel.value.followers.length
-                            .toString(),
-                        style: const TextStyle(color: ColorConstants.white),
-                      ),
-                      const Text(
-                        "Friends",
-                        style: TextStyle(color: ColorConstants.white),
-                      ),
-                    ],
-                  ),
-                ),
+                    onTap: () {
+                      Get.to(() => FriendsView(
+                          list: controller.profileUserModel.value.followers));
+                    },
+                    child: userTab(
+                        controller.profileUserModel.value.followers.length,
+                        "Friends")),
               ],
             )
           ],
@@ -288,11 +220,22 @@ class ProfileView extends StatelessWidget {
     );
   }
 
+  userTab(int length, String tabText) {
+    return Column(
+      children: [
+        Text(
+          "$length",
+          style: const TextStyle(color: ColorConstants.white),
+        ),
+        Text(
+          tabText,
+          style: const TextStyle(color: ColorConstants.white),
+        ),
+      ],
+    );
+  }
 
-
-
-
-  Future showPicker() {
+  userPhotoPicker() {
     return Get.dialog(
       Center(
         child: SizedBox(
@@ -357,6 +300,53 @@ class ProfileView extends StatelessWidget {
               ),
             )),
       ),
+    );
+  }
+  
+  Widget _userEventsField() {
+    return Positioned(
+      top: Get.height * .32,
+      left: Get.width * .05,
+      right: Get.width * .05,
+      child: SizedBox(
+          height: Get.height * .6,
+          width: Get.width,
+          child: Obx(
+            () => controller.userEventList.isEmpty
+                ? const Text(
+                    "not found event",
+                    style: TextStyle(color: ColorConstants.goutWhite),
+                  )
+                : ListView.builder(
+                    itemCount: controller.userEventList.length,
+                    prototypeItem: const EventCard(
+                        month: "June",
+                        day: "10",
+                        eventTitle: "Birthday",
+                        nickname: "ozancamur",
+                        eventId: "ozancamur10062000",
+                        createrName: "Ozan Camur",
+                        createrId: "createrId",),
+                    itemBuilder: (context, index) {
+                      DateTime date =
+                          controller.userEventList[index].date.toDate();
+                      String month = controller.monthMap[date.month]!;
+                      String day;
+                      date.day < 10
+                          ? day = "0${date.day}"
+                          : day = "${date.day}";
+                      return EventCard(
+                        month: month,
+                        day: day,
+                        eventTitle: controller.userEventList[index].eventTitle,
+                        nickname: controller.profileUserModel.value.nickname,
+                        eventId: controller.userEventList[index].id,
+                        createrName: controller.profileUserModel.value.name,
+                        createrId: controller.userEventList[index].createrId,
+                      );
+                    },
+                  ),
+          )),
     );
   }
 }

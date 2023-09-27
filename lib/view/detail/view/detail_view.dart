@@ -1,15 +1,20 @@
 // ignore_for_file: must_be_immutable, unnecessary_null_comparison
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/constant/color/color_constants.dart';
+import 'package:gout_app/core/services/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/add_friend_card/add_friend_card.dart';
-import 'package:gout_app/core/widgets/appBar/gout_appbar.dart';
+import 'package:gout_app/core/widgets/card/change_card.dart';
 import 'package:gout_app/view/detail/viewmodel/detail_view_model.dart';
 
 class DetailView extends StatelessWidget {
-  DetailView({super.key, required this.eventId, required this.createrName});
+  DetailView(
+      {super.key,
+      required this.eventId,
+      required this.createrName,
+      required this.createrId});
   String eventId;
   String createrName;
+  String createrId;
 
   final controller = Get.put(DetailViewModel());
 
@@ -25,33 +30,51 @@ class DetailView extends StatelessWidget {
         controller.checkUserForEvent(
             controller.detailModel.value.arrivals,
             controller.detailModel.value.invited,
-            controller.detailModel.value.createrId);
-        controller.isEventFavorite(eventId);
+            controller.detailModel.value.createrId,
+            controller.detailModel.value.createdOnDate);
         controller.getEventMoments(eventId);
         return SafeArea(
           child: Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: goutAppBar("Event"),
-            backgroundColor: ColorConstants.black,
-            body: Padding(
-              padding: EdgeInsets.only(
-                      left: Get.width * .05,
-                      right: Get.width * .05,
-                      top: Get.height * .02),
-              child: Obx(() => Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _eventCardField(),
-                      controller.comingQuestion.value
-                          ? _yourAnswerField()
-                          : const SizedBox(),
-                      controller.down.value ? _momentsField() : const SizedBox()
-                    ],
-                  )),
+            appBar: AppBar(
+              centerTitle: true,
+              shadowColor: ColorConstants.goutWhite,
+              backgroundColor: ColorConstants.black,
+              leading: IconButton(
+                onPressed: () => Get.back(),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: ColorConstants.white,
+                  size: 20,
+                ),
+              ),
+              title: const Text(
+                "Event",
+                style: TextStyle(color: ColorConstants.goutWhite, fontSize: 25),
+              ),
             ),
+            backgroundColor: ColorConstants.black,
+            body: _bodyField(controller),
           ),
         );
       },
+    );
+  }
+
+  Padding _bodyField(DetailViewModel controller) {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: Get.width * .05, right: Get.width * .05, top: Get.height * .02),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _eventCardField(),
+          controller.comingQuestion.value
+              ? _yourAnswerField()
+              : const SizedBox(),
+          controller.down.value ? _momentsField() : const SizedBox()
+        ],
+      ),
     );
   }
 
@@ -73,18 +96,16 @@ class DetailView extends StatelessWidget {
           color: ColorConstants.backgrounColor,
           borderRadius: BorderRadius.circular(30)),
       child: Padding(
-        padding: EdgeInsets.only(
-            top: Get.height * .025,
-            left: Get.width * .07,
-            right: Get.width * .07),
+        padding: EdgeInsets.only(left: Get.width * .07, right: Get.width * .07),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             // ! EVENT TITLE & DESCRIPTION
             Padding(
-              padding: EdgeInsets.only(bottom: Get.height * .07),
+              padding: EdgeInsets.only(bottom: Get.height * .02),
               child: Container(
-                height: Get.height * .15,
+                height: Get.height * .25,
                 width: Get.width,
                 decoration: const BoxDecoration(
                   border: Border(
@@ -97,53 +118,58 @@ class DetailView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      controller.detailModel.value.eventTitle.toUpperCase(),
-                      style: const TextStyle(
-                          color: ColorConstants.white, fontSize: 27),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: Get.width * .65,
+                          child: Text(
+                            controller.detailModel.value.eventTitle
+                                .toUpperCase(),
+                            style: const TextStyle(
+                                color: ColorConstants.white, fontSize: 27),
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                        controller.detailModel.value.eventDescription
-                            .toLowerCase(),
-                        style: const TextStyle(
-                            color: ColorConstants.goutWhite, fontSize: 16)),
+                    Flexible(
+                      child: Text(
+                          controller.detailModel.value.eventDescription
+                              .toLowerCase(),
+                          style: const TextStyle(
+                              color: ColorConstants.goutWhite, fontSize: 16)),
+                    ),
                   ],
                 ),
               ),
             ),
 
-            //! LOCATION
-            _eventProperty("Madrid, Spain", "place"),
-
             //! ABOUT EVENT
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: Get.height * .0125),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  //! date and organizator
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      _eventProperty("$day/$month/$year", "date"),
-                      _eventProperty(createrName, "organizator"),
-                    ],
-                  ),
-                  //! time and arrivals
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      _eventProperty("$hour:$minute", "time"),
-                      InkWell(
-                          onTap: () => _showArrivals(),
-                          child: _eventProperty(
-                              controller.detailModel.value.arrivals.length
-                                  .toString(),
-                              "arrivals"))
-                    ],
-                  )
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                //! date and organizator
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _eventProperty("$day/$month/$year", "date"),
+                    _eventProperty(createrName, "organizator"),
+                  ],
+                ),
+                //! time and arrivals
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _eventProperty("$hour:$minute", "time"),
+                    InkWell(
+                        onTap: () => _showArrivals(),
+                        child: _eventProperty(
+                            controller.detailModel.value.arrivals.length
+                                .toString(),
+                            "arrivals"))
+                  ],
+                )
+              ],
             ),
 
             //! EVENT FUNCTIONS
@@ -155,105 +181,94 @@ class DetailView extends StatelessWidget {
   }
 
   Widget _eventMethods() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        //! FAVORITE BUTTON
-        controller.isFavorite.value
-            ? IconButton(
-                onPressed: () {
-                  controller.eventIsFavorite(eventId);
-                },
-                icon: const Icon(
-                  Icons.favorite,
-                  color: ColorConstants.goutPurple,
-                  size: 25,
-                ),
-              )
-            : IconButton(
-                onPressed: () {
-                  controller.eventIsNotFavorite(eventId);
-                },
-                icon: const Icon(
-                  Icons.favorite_border,
-                  color: ColorConstants.goutPurple,
-                  size: 25,
-                ),
+    return Padding(
+      padding: EdgeInsets.only(top: Get.height * .03),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          //! FAVORITE BUTTON
+          eventButton(
+              controller.isFavorite.value,
+              () => controller.eventIsNotFavorite(eventId),
+              Icons.favorite,
+              () => controller.eventIsFavorite(eventId),
+              secondIcon: Icons.favorite_border,
+              color: ColorConstants.goutPurple),
+          //! COMMAND BUTTON
+          eventButton(
+            controller.momentTime.value,
+            () => _addMoment(),
+            Icons.message,
+            () => Get.showSnackbar(
+              const GetSnackBar(
+                message: "you can not share a moment into this event.",
+                snackPosition: SnackPosition.TOP,
               ),
-        //! COMMAND BUTTON
-        controller.isComing.value
-            ? IconButton(
-                onPressed: () {
-                  _addMoment();
-                },
-                icon: const Icon(
-                  Icons.message,
-                  color: ColorConstants.goutPurple,
-                  size: 25,
-                ),
-              )
-            : IconButton(
-                onPressed: () {
-                  Get.showSnackbar(const GetSnackBar(
-                    message: "you can not share a moment into this event.",
-                    snackPosition: SnackPosition.TOP,
-                  ));
-                },
-                icon: const Icon(
-                  Icons.message,
-                  color: ColorConstants.grey,
-                  size: 25,
-                ),
+            ),
+          ),
+          //! BLOCK BUTTON
+          eventButton(
+            controller.isComing.value,
+            () => controller.cantCome(eventId),
+            Icons.block,
+            () => Get.showSnackbar(
+              const GetSnackBar(
+                message: "you are not going to this event.",
+                snackPosition: SnackPosition.TOP,
               ),
-        //! BLOCK BUTTON
-        controller.isComing.value
-            ? IconButton(
-                icon: const Icon(
-                  Icons.block,
-                  size: 25,
-                  color: ColorConstants.goutPurple,
-                ),
-                onPressed: () {
-                  controller.cantCome(eventId);
-                },
-              )
-            : IconButton(
-                icon: const Icon(
-                  Icons.block,
-                  size: 25,
-                  color: ColorConstants.grey,
-                ),
-                onPressed: () {
-                  Get.showSnackbar(const GetSnackBar(
-                    message: "you are not going to this event.",
-                    snackPosition: SnackPosition.TOP,
-                  ));
-                },
+            ),
+          ),
+          //! LOCATION
+          eventButton(
+            controller.isComing.value,
+            () => controller.displayLocation(
+                controller.detailModel.value.location.latitude,
+                controller.detailModel.value.location.longitude),
+            Icons.location_on,
+            () => Get.showSnackbar(
+              const GetSnackBar(
+                message: "you can not see thi event's location.",
+                snackPosition: SnackPosition.TOP,
               ),
-        //! SEE COMMANDS BUTTON
-        controller.down.value
-            ? IconButton(
-                icon: const Icon(
-                  Icons.keyboard_arrow_up,
-                  size: 25,
-                  color: ColorConstants.goutPurple,
-                ),
-                onPressed: () {
-                  controller.down.value = false;
-                },
-              )
-            : IconButton(
-                icon: const Icon(
-                  Icons.keyboard_arrow_down,
-                  size: 25,
-                  color: ColorConstants.goutPurple,
-                ),
-                onPressed: () {
-                  controller.down.value = true;
-                },
-              )
-      ],
+            ),
+          ),
+          //! SEE COMMANDS BUTTON
+          eventButton(
+              controller.down.value,
+              () => controller.down.value = false,
+              Icons.keyboard_arrow_up,
+              () => controller.down.value = true,
+              secondIcon: Icons.keyboard_arrow_down,
+              color: ColorConstants.goutPurple),
+
+              
+        ],
+      ),
     );
+  }
+
+  IconButton eventButton(bool value, Function() truePressed, IconData icon,
+      Function() falsePressed,
+      {IconData? secondIcon, Color? color}) {
+    secondIcon ??= icon;
+    color ??= ColorConstants.grey;
+    return value
+        ? IconButton(
+            onPressed: truePressed,
+            icon: Icon(
+              icon,
+              color: ColorConstants.goutPurple,
+              size: 25,
+            ),
+          )
+        : IconButton(
+            onPressed: falsePressed,
+            icon: Icon(
+              secondIcon,
+              color: color,
+              size: 25,
+            ),
+          );
   }
 
   Widget _eventProperty(String location, String field) {
@@ -360,7 +375,7 @@ class DetailView extends StatelessWidget {
                       nickname: controller.arrivalsList[index].nickname!,
                       name: controller.arrivalsList[index].name!,
                       id: controller.arrivalsList[index].id!,
-                      imageURL: controller.arrivalsList[index].photoURL,
+                      photoURL: controller.arrivalsList[index].photoURL,
                     );
                   },
                 ),
@@ -399,7 +414,7 @@ class DetailView extends StatelessWidget {
                               style:
                                   const TextStyle(color: ColorConstants.white),
                               decoration: InputDecoration(
-                                hintText: "add a command",
+                                hintText: "add a memory",
                                 hintStyle: const TextStyle(
                                     color: ColorConstants.goutWhite),
                                 filled: true,
@@ -478,14 +493,14 @@ class DetailView extends StatelessWidget {
                   leading: const Icon(Icons.photo_library),
                   title: const Text('Gallery'),
                   onTap: () {
-                    controller.pickImageFromGallery();
+                    controller.pickImageFromGalleryForMoment();
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.photo_camera),
                   title: const Text('Camera'),
                   onTap: () {
-                    controller.pickImageFromCamera();
+                    controller.pickImageFromCameraForMoment();
                   },
                 ),
               ],
@@ -496,77 +511,97 @@ class DetailView extends StatelessWidget {
 
   Widget _momentsField() {
     return controller.momentsList.isEmpty
-    ? const Text("not found any moment", style: TextStyle(color: ColorConstants.red),)
-    : Flexible(
-        child: Container(
-      width: Get.width * .75,
-      decoration: const BoxDecoration(
-          color: ColorConstants.backgrounColor,
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(30),
-              bottomRight: Radius.circular(30))),
-      child: ListView.builder(
-          itemCount: controller.momentsList.length,
-          itemBuilder: (context, index) {
-            return _comment(index);
-          }),
-    ));
+        ? const Text(
+            "not found any moment",
+            style: TextStyle(color: ColorConstants.red),
+          )
+        : Flexible(
+            child: Container(
+            width: Get.width * .75,
+            decoration: const BoxDecoration(
+                color: ColorConstants.backgrounColor,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30))),
+            child: ListView.builder(
+                itemCount: controller.momentsList.length,
+                itemBuilder: (context, index) {
+                  return _comment(index);
+                }),
+          ));
   }
 
   Padding _comment(int index) {
     return Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: Get.height * .006, horizontal: Get.width * .03),
-            child: Flexible(
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1.5, color: ColorConstants.goutWhite),
-                  color: ColorConstants.backgrounColor,
-                  borderRadius: BorderRadius.circular(50)
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: Get.height*.01),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: Get.width*.02),
-                        child: const CircleAvatar(
-                          backgroundImage: AssetImage("assets/images/no_profile_photo.png"),
-                          foregroundImage: AssetImage("assets/images/me.png"),
-                          radius: 24,
-                        ),
-                      ),
-                      controller.momentsList[index].momentImageUrl.isEmpty
-                      ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("@${controller.momentsList[index].owner}", style: const TextStyle(color: ColorConstants.goutWhite, fontSize: 13.5),),
-                          SizedBox(
-                            width: Get.width*.5,
-                            child: Text(controller.momentsList[index].comment, style: const TextStyle(color: Colors.white, fontSize: 12),)),
-                        ],
-                      )
-                      : Row(
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("@${controller.momentsList[index].owner}", style: const TextStyle(color: ColorConstants.goutWhite, fontSize: 13.5),),
-                              SizedBox(
-                                width: Get.width*.5,
-                                child: Text(controller.momentsList[index].comment, style: const TextStyle(color: Colors.white, fontSize: 12),)),
-                            ],
-                          ),
-                          //Image.network(controller.momentsList[index].momentImageUrl)
-                        ],
-                      )
-                    ],
+      padding: EdgeInsets.symmetric(
+          vertical: Get.height * .006, horizontal: Get.width * .03),
+      child: Flexible(
+        child: Container(
+            decoration: BoxDecoration(
+                border: Border.all(width: 1.5, color: ColorConstants.goutWhite),
+                color: ColorConstants.backgrounColor,
+                borderRadius: BorderRadius.circular(50)),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: Get.height * .01),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: Get.width * .02),
+                    child: const CircleAvatar(
+                      backgroundImage:
+                          AssetImage("assets/images/no_profile_photo.png"),
+                      foregroundImage: AssetImage("assets/images/me.png"),
+                      radius: 24,
+                    ),
                   ),
-                )
+                  controller.momentsList[index].momentImageUrl.isEmpty
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "@${controller.momentsList[index].owner}",
+                              style: const TextStyle(
+                                  color: ColorConstants.goutWhite,
+                                  fontSize: 13.5),
+                            ),
+                            SizedBox(
+                                width: Get.width * .5,
+                                child: Text(
+                                  controller.momentsList[index].comment,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                )),
+                          ],
+                        )
+                      : Row(
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "@${controller.momentsList[index].owner}",
+                                  style: const TextStyle(
+                                      color: ColorConstants.goutWhite,
+                                      fontSize: 13.5),
+                                ),
+                                SizedBox(
+                                    width: Get.width * .5,
+                                    child: Text(
+                                      controller.momentsList[index].comment,
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 12),
+                                    )),
+                              ],
+                            ),
+                            //Image.network(controller.momentsList[index].momentImageUrl)
+                          ],
+                        )
+                ],
               ),
-            ),
-          );
+            )),
+      ),
+    );
   }
 }

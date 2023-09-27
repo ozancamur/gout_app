@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable, unrelated_type_equality_checks
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/constant/color/color_constants.dart';
+import 'package:gout_app/core/services/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/eventCard/event_card.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
 import 'package:gout_app/view/home/viewmodel/home_view_model.dart';
@@ -9,7 +9,6 @@ import 'package:gout_app/view/home/viewmodel/home_view_model.dart';
 class HomeView extends StatelessWidget {
   HomeView({super.key});
   final controller = Get.put(HomeViewModel());
-  
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +46,7 @@ class HomeView extends StatelessWidget {
   Widget _customAppBar() {
     return Container(
       width: Get.width,
-      height: Get.height * .17,
+      height: Get.height * .18,
       decoration: const BoxDecoration(
           color: ColorConstants.backgrounColor,
           borderRadius: BorderRadius.only(
@@ -82,11 +81,13 @@ class HomeView extends StatelessWidget {
                 minRadius: 21.75,
                 maxRadius: 28.75,
                 child: CircleAvatar(
-                  minRadius: 20,
-                  maxRadius: 27,
-                  backgroundImage: const AssetImage("assets/images/no_profile_photo.png"),
-                  foregroundImage: controller.imageURL.value.isEmpty ? null : NetworkImage(controller.imageURL.value)
-                ),
+                    minRadius: 20,
+                    maxRadius: 27,
+                    backgroundImage:
+                        const AssetImage("assets/images/no_profile_photo.png"),
+                    foregroundImage: controller.imageURL.value.isEmpty
+                        ? null
+                        : NetworkImage(controller.imageURL.value)),
               ),
             )
           ],
@@ -97,32 +98,47 @@ class HomeView extends StatelessWidget {
 
   Widget _eventList() {
     return SizedBox(
-      height: Get.height * .751,
+      height: Get.height * .71,
       width: Get.width * .87,
       child: Obx(
-        () => controller.eventsList.isEmpty ? const Center(child: Text("not found any event"),) 
-        : ListView.builder(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          itemCount: controller.eventsList.length,
-          prototypeItem: const EventCard(month: "June", day: "10", eventTitle: "never mind", nickname: "ozancamur", eventId: "Ozan Camur", createrName: "createrName"),
-          itemBuilder: (context, index) {
-            if(controller.eventsList != 0) controller.getCreaterNickname(controller.eventsList[index].createrId);
-            DateTime date = controller.eventsList[index].date.toDate();
-            String? month = controller.monthMap[date.month];
-            String day;
-            date.day < 10 ? day = "0${date.day}" : day = "${date.day}";
-            return controller.nickname.isEmpty 
-                ? const Text("loading events")
-                : EventCard(
-                    day: day,
-                    month: month!,
-                    eventTitle: controller.eventsList[index].eventTitle,
-                    nickname: controller.nickname[index],
-                    eventId: controller.eventsList[index].id,
-                    createrName: controller.name[index],
-                  );
-          },
-        ),
+        () => controller.eventsList.isEmpty
+            ? const Center(
+                child: Text("not found any event"),
+              )
+            : ListView.builder(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                itemCount: controller.eventsList.length,
+                prototypeItem: const EventCard(
+                    month: "June",
+                    day: "10",
+                    eventTitle: "never mind",
+                    nickname: "ozancamur",
+                    eventId: "Ozan Camur",
+                    createrName: "createrName",
+                    createrId: "createrId",),
+                itemBuilder: (context, index) {
+                  if (controller.eventsList != 0) {
+                    controller.getCreaterNickname(
+                        controller.eventsList[index].createrId);
+                  }
+                  DateTime date = controller.eventsList[index].date.toDate();
+                  String? month = controller.monthMap[date.month];
+                  String day;
+                  date.day < 10 ? day = "0${date.day}" : day = "${date.day}";
+                  return controller.nickname.isEmpty
+                      ? const Text("loading events")
+                      : EventCard(
+                          day: day,
+                          month: month!,
+                          eventTitle: controller.eventsList[index].eventTitle,
+                          nickname: controller.nickname[index],
+                          eventId: controller.eventsList[index].id,
+                          createrName: controller.name[index],
+                          createrId: controller.eventsList[index].createrId,
+                        );
+                },
+              ),
       ),
     );
   }

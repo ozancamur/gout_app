@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/constant/color/color_constants.dart';
+import 'package:gout_app/core/services/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/appBar/gout_appbar.dart';
 import 'package:gout_app/view/friend/friends/viewmodel/friends_view_model.dart';
 import 'package:gout_app/view/friend/profile/view/friend_profile_view.dart';
@@ -43,6 +43,7 @@ class FriendsView extends StatelessWidget {
                 controller.friendsList[index].name,
                 controller.friendsList[index].nickname,
                 controller.friendsList[index].id,
+                controller.friendsList[index].photoURL,
                 index);
           },
         ),
@@ -50,7 +51,7 @@ class FriendsView extends StatelessWidget {
     );
   }
 
-  Widget _friendsCard(String name, String nickname, String id, int index) {
+  Widget _friendsCard(String name, String nickname, String id, String photoURL, int index) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -74,23 +75,22 @@ class FriendsView extends StatelessWidget {
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: Get.width * .03),
-                      child: const CircleAvatar(
-                        foregroundImage:
-                            AssetImage("assets/images/profile_photo.png"),
-                        backgroundColor: ColorConstants.goutWhite,
-                        maxRadius: 20,
-                        minRadius: 20,
-                      ),
+                      child: CircleAvatar(
+                            backgroundImage: const AssetImage(
+                              "assets/images/no_profile_photo.png",
+                            ),
+                            foregroundImage: NetworkImage(photoURL),
+                          ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(bottom: Get.height * .0075),
+                      padding: EdgeInsets.only(bottom: Get.height * .005),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
                               width: Get.width * .3,
-                              height: Get.height * .02,
+                              height: Get.height * .025,
                               child: Text(
                                 name,
                                 style: const TextStyle(
@@ -99,7 +99,7 @@ class FriendsView extends StatelessWidget {
                               )),
                           SizedBox(
                               width: Get.width * .3,
-                              height: Get.height * .02,
+                              height: Get.height * .025,
                               child: Text(
                                 "@$nickname",
                                 style: const TextStyle(
@@ -119,7 +119,7 @@ class FriendsView extends StatelessWidget {
           child: InkWell(
             onTap: () {
               Get.defaultDialog(
-                title: "$name",
+                title: name,
                   backgroundColor: ColorConstants.white,
                   middleText: "are you sure to unfollow?",
                   titleStyle: const TextStyle(
@@ -130,7 +130,7 @@ class FriendsView extends StatelessWidget {
                     controller.unfollowFriend(id, index);
                     Get.back();
                   },
-                  onCancel: () =>  Get.back(),
+                  onCancel: () {},
                   );
             },
             child: Container(

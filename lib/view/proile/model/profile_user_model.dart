@@ -1,26 +1,22 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileUserModel {
+
+  String email;
+  List favorites;
+  List followers;
   String name;
   String nickname;
-  String email;
-  String password;
-  Timestamp date;
-  List followers;
-  List requests;
-  List favorites;
   String photoURL;
+  List requests;
   ProfileUserModel({
+    required this.email,
+    required this.favorites,
+    required this.followers,
     required this.name,
     required this.nickname,
-    required this.email,
-    required this.password,
-    required this.date,
-    required this.followers,
+    required this.photoURL,
     required this.requests,
-    required this.favorites,
-    required this.photoURL
     
   });
 }

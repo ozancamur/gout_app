@@ -1,13 +1,16 @@
+// ignore: unused_import
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// ignore: unused_import
 import 'package:get_storage/get_storage.dart';
-import 'package:gout_app/core/constant/color/color_constants.dart';
+import 'package:gout_app/core/services/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/appBar/gout_appbar.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
+import 'package:gout_app/core/widgets/button/gout_button.dart';
+import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
 import 'package:gout_app/view/create/model/create_model.dart';
 import 'package:gout_app/view/create/viewmodel/create_view_model.dart';
+import 'package:gout_app/view/home/view/home_view.dart';
 
 class CreateView extends StatelessWidget {
   CreateView({super.key});
@@ -17,6 +20,16 @@ class CreateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var choosedDate = Timestamp.fromDate(
+      DateTime(
+        controller.currentDate.value.year,
+        controller.currentDate.value.month,
+        controller.currentDate.value.day,
+        controller.currentTime.value.hour,
+        controller.currentTime.value.minute,
+      ),
+    );
+    controller.getFriends();
     return SafeArea(
         child: Scaffold(
       resizeToAvoidBottomInset: false,
@@ -24,13 +37,42 @@ class CreateView extends StatelessWidget {
       appBar: goutAppBar("Create an Event"),
       bottomSheet: goutBottomAppBar(pageId: 2),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Get.width * .05),
+        padding: EdgeInsets.symmetric(
+            horizontal: Get.width * .05, vertical: Get.height * .03),
         child: Column(
           children: [
             _titleField(),
             _descriptionField(),
-            _dateAndTimeField(),
-            _buttonField()
+            _dateTimeLocationAndInviteField(),
+            goutButton(
+              controller.colors,
+              "Create an Event",
+              () {
+                if (controller.tecEventTitle.text != "" &&
+                    controller.tecEventDescription.text != "" &&
+                    controller.friendList.isNotEmpty) {
+                  controller.createEvent(
+                    CreateModel(
+                      arrivals: [],
+                      createdOnDate: Timestamp.fromDate(DateTime.now()),
+                      createrId: box.read("userUID"),
+                      date: choosedDate,
+                      eventDescription: controller.tecEventDescription.text,
+                      eventTitle: controller.tecEventTitle.text,
+                      invited: controller.invitedList,
+                      location: GeoPoint(
+                        controller.lat.value,
+                        controller.long.value,
+                      ),
+                    ),
+                  );
+                  Get.off(() => HomeView());
+                } else {
+                  errorSnackbar("ERROR", "You must fill in all fields");
+                  
+                }
+              },
+            ),
           ],
         ),
       ),
@@ -41,6 +83,7 @@ class CreateView extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: Get.height * .05),
       child: TextField(
+        maxLength: 20,
         controller: controller.tecEventTitle,
         cursorColor: ColorConstants.white,
         keyboardType: TextInputType.emailAddress,
@@ -56,13 +99,13 @@ class CreateView extends StatelessWidget {
           border: OutlineInputBorder(
               borderSide:
                   const BorderSide(width: 1.5, color: ColorConstants.grey),
-              borderRadius: BorderRadius.circular(20)),
+              borderRadius: BorderRadius.circular(30)),
           focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(
                 width: 1.5,
                 color: ColorConstants.goutMainColor,
               ),
-              borderRadius: BorderRadius.circular(20)),
+              borderRadius: BorderRadius.circular(30)),
         ),
       ),
     );
@@ -72,6 +115,7 @@ class CreateView extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: Get.height * .03),
       child: TextField(
+        maxLength: 99,
         controller: controller.tecEventDescription,
         cursorColor: ColorConstants.white,
         keyboardType: TextInputType.emailAddress,
@@ -87,97 +131,125 @@ class CreateView extends StatelessWidget {
           border: OutlineInputBorder(
               borderSide:
                   const BorderSide(width: 1.5, color: ColorConstants.grey),
-              borderRadius: BorderRadius.circular(20)),
+              borderRadius: BorderRadius.circular(30)),
           focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(
                 width: 1.5,
                 color: ColorConstants.goutMainColor,
               ),
-              borderRadius: BorderRadius.circular(20)),
+              borderRadius: BorderRadius.circular(30)),
         ),
       ),
     );
   }
 
-  Widget _dateAndTimeField() {
+  Widget _dateTimeLocationAndInviteField() {
     return Padding(
         padding: EdgeInsets.only(top: Get.height * .03),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                controller.pickDate();
-              },
-              child: Obx(() => Text(
-                    "${controller.currentDate.value.day} / ${controller.currentDate.value.month} / ${controller.currentDate.value.year}",
-                    style: const TextStyle(
+        child: SizedBox(
+          height: Get.height * .15,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              //! DATE AND TIME
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  //! DATE
+                  SizedBox(
+                    height: Get.height * .045,
+                    width: Get.width * .4,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        controller.pickDate();
+                      },
+                      icon: const Icon(
+                        Icons.date_range,
                         color: ColorConstants.black,
-                        fontWeight: FontWeight.bold),
-                  )),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                controller.pickTime();
-              },
-              child: Obx(() => Text(
-                    "${controller.currentTime.value.hour} : ${controller.currentTime.value.minute}",
-                    style: const TextStyle(
+                      ),
+                      label: Obx(() => Text(
+                            "${controller.currentDate.value.day}/${controller.currentDate.value.month}/${controller.currentDate.value.year}",
+                            style: const TextStyle(
+                                color: ColorConstants.black,
+                                fontWeight: FontWeight.bold),
+                          )),
+                    ),
+                  ),
+                  //! TIME
+                  SizedBox(
+                    height: Get.height * .045,
+                    width: Get.width * .4,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        controller.pickTime();
+                      },
+                      icon: const Icon(
+                        Icons.access_time_filled_outlined,
                         color: ColorConstants.black,
-                        fontWeight: FontWeight.bold),
-                  )),
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Icon(
-                Icons.location_on,
-                color: ColorConstants.black,
+                      ),
+                      label: Obx(() => Text(
+                            "${controller.currentTime.value.hour} : ${controller.currentTime.value.minute}",
+                            style: const TextStyle(
+                                color: ColorConstants.black,
+                                fontWeight: FontWeight.bold),
+                          )),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ));
-  }
-
-  Widget _buttonField() {
-    var choosedDate = Timestamp.fromDate(DateTime(
-        controller.currentDate.value.year, controller.currentDate.value.month, controller.currentDate.value.day, 
-        controller.currentTime.value.hour, controller.currentTime.value.minute
-        ));
-    return Padding(
-      padding:
-          EdgeInsets.only(top: Get.height * .05, bottom: Get.height * .025),
-      child: InkWell(
-        onTap: () {
-          controller.createEvent(
-            CreateModel(
-              arrivals: [],
-              createdOnDate: Timestamp.fromDate(DateTime.now()),
-              createrId: box.read("userUID"),
-              date: choosedDate,
-              eventDescription: controller.tecEventDescription.text,
-              eventTitle: controller.tecEventTitle.text,
-              invited: [], 
-            ),
-          );
-        },
-        child: Container(
-          width: Get.width,
-          height: Get.height * .075,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: const LinearGradient(colors: [
-                ColorConstants.goutSecondColor,
-                ColorConstants.goutThirdColor
-              ], begin: Alignment.centerLeft, end: Alignment.centerRight)),
-          child: const Center(
-            child: Text(
-              "Create an Event",
-              style: TextStyle(color: ColorConstants.white, fontSize: 20),
-            ),
+              //! LOCAITON AND INVITE
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  //! LOCAITON
+                  SizedBox(
+                    height: Get.height * .045,
+                    width: Get.width * .4,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        controller.pickLocation();
+                      },
+                      icon: const Icon(
+                        Icons.location_on,
+                        color: ColorConstants.black,
+                      ),
+                      label: const Text(
+                        "Location",
+                        style: TextStyle(
+                          color: ColorConstants.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  //! INVITE
+                  SizedBox(
+                    height: Get.height * .045,
+                    width: Get.width * .4,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        controller.chooseFriends(controller.friendList);
+                      },
+                      icon: const Icon(
+                        Icons.person_add_alt_rounded,
+                        color: ColorConstants.black,
+                      ),
+                      label: const Text(
+                        "Add",
+                        style: TextStyle(
+                          color: ColorConstants.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

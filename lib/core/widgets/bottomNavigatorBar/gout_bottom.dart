@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:gout_app/core/constant/color/color_constants.dart';
+import 'package:gout_app/core/services/constant/color/color_constants.dart';
 import 'package:gout_app/view/create/view/create_view.dart';
 import 'package:gout_app/view/home/view/home_view.dart';
 import 'package:gout_app/view/proile/view/profile_view.dart';
@@ -106,14 +106,14 @@ class goutBottomAppBar extends StatelessWidget {
               // * HOME ICON
               IconButton(
                 onPressed: () {
-                  Get.to(()=>HomeView());
+                  Get.off(()=>HomeView());
                 },
                 icon: home,
               ),
               // * SEARCH ICON
               IconButton(
                 onPressed: () {
-                  Get.to(()=>SearchView());
+                  Get.off(()=>SearchView());
                 },
                 icon: search,
               ),
@@ -127,14 +127,14 @@ class goutBottomAppBar extends StatelessWidget {
               // * PROFILE ICON
               IconButton(
                 onPressed: () {
-                  Get.to(() => ProfileView());
+                  Get.off(() => ProfileView());
                 },
                 icon: person,
               ),
               // * SETTINGS ICON
               IconButton(
                   onPressed: () {
-                    Get.to(() => SettingsView());
+                    Get.off(() => SettingsView());
                   },
                   icon: settings),
             ]));

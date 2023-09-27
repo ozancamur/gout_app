@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/constant/color/color_constants.dart';
+import 'package:gout_app/core/services/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/appBar/gout_appbar.dart';
+import 'package:gout_app/view/friend/profile/view/friend_profile_view.dart';
 import 'package:gout_app/view/friend/request/viewmodel/request_view_model.dart';
 
 class RequestView extends StatelessWidget {
@@ -58,7 +59,7 @@ class RequestView extends StatelessWidget {
               horizontal: Get.width * .03, vertical: Get.height * .01),
           child: InkWell(
             onTap: () {
-              // ? go to user profile
+              Get.to(()=>FriendProfileView(id: id,));
             },
             child: Container(
                 height: Get.height * .08,
@@ -80,14 +81,14 @@ class RequestView extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(bottom: Get.height * .0075),
+                      padding: EdgeInsets.only(bottom: Get.height * .005),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
                               width: Get.width * .3,
-                              height: Get.height * .02,
+                              height: Get.height * .025,
                               child: Text(
                                 name,
                                 style: const TextStyle(
@@ -96,7 +97,7 @@ class RequestView extends StatelessWidget {
                               )),
                           SizedBox(
                               width: Get.width * .3,
-                              height: Get.height * .02,
+                              height: Get.height * .025,
                               child: Text(
                                 "@$nickname",
                                 style: const TextStyle(
