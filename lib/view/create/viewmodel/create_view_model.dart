@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/enum/firebase_enum.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
 import 'package:gout_app/core/services/firebase/firebase_firestore.dart';
 import 'package:gout_app/core/widgets/add_friend_card/add_friend_card.dart';
 import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
@@ -30,8 +30,6 @@ class CreateViewModel extends GetxController {
   var currentDate = DateTime.now().obs;
   var currentTime = TimeOfDay.now().obs;
 
-  
-
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
   var markers = <Marker>{}.obs;
@@ -40,6 +38,39 @@ class CreateViewModel extends GetxController {
   var long = 32.836956.obs;
   List<FriendModel> friendList = <FriendModel>[].obs;
   List<String> invitedList = <String>[].obs;
+
+  Future<void> getFriends() async {
+    try {
+      friendList.clear();
+      List list;
+      DocumentSnapshot me =
+          await FirebaseCollectionsEnum.user.col.doc(box.read("userUID")).get();
+      list = me["followers"];
+      list.forEach((user) async {
+        DocumentSnapshot friend =
+            await FirebaseCollectionsEnum.user.col.doc(user).get();
+        friendList.add(
+          FriendModel(
+            nickname: friend["nickname"],
+            name: friend["name"],
+            id: friend.id,
+            photoURL: friend["photoURL"],
+          ),
+        );
+      });
+    } catch (e) {
+      errorSnackbar("getFriends, ERROR => ", "$e");
+      debugPrint("$e");
+    }
+  }
+
+  Future<void> createEvent(CreateModel model) async {
+    try {
+      firebaseFirestore.createAnEvent(model);
+    } catch (e) {
+      errorSnackbar("CreateViewModel, createEventERROR: ", "$e");
+    }
+  }
 
   pickDate() async {
     DateTime? pickedDate = await showDatePicker(
@@ -149,38 +180,5 @@ class CreateViewModel extends GetxController {
         ),
       ),
     );
-  }
-
-  Future<void> getFriends() async {
-    try {
-      friendList.clear();
-      List list;
-      DocumentSnapshot me =
-          await FirebaseCollectionsEnum.user.col.doc(box.read("userUID")).get();
-      list = me["followers"];
-      list.forEach((user) async {
-        DocumentSnapshot friend =
-            await FirebaseCollectionsEnum.user.col.doc(user).get();
-        friendList.add(
-          FriendModel(
-            nickname: friend["nickname"],
-            name: friend["name"],
-            id: friend.id,
-            photoURL: friend["photoURL"],
-          ),
-        );
-      });
-    } catch (e) {
-      errorSnackbar("getFriends, ERROR => ", "$e");
-      debugPrint("$e");
-    }
-  }
-
-  Future<void> createEvent(CreateModel model) async {
-    try {
-      firebaseFirestore.createAnEvent(model);
-    } catch (e) {
-      errorSnackbar("CreateViewModel, createEventERROR: ", "$e");
-    }
   }
 }

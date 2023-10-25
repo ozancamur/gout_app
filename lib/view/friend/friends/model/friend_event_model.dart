@@ -7,12 +7,14 @@ class FriendEventModel {
   String eventDescription;
   Timestamp date;
   String createrId;
+  List arrivals;
   FriendEventModel({
     required this.id,
     required this.eventTitle,
     required this.eventDescription,
     required this.date,
-    required this.createrId
+    required this.createrId,
+    required this.arrivals,
   });
   
 }

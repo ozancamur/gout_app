@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/view/create/view/create_view.dart';
 import 'package:gout_app/view/home/view/home_view.dart';
 import 'package:gout_app/view/proile/view/profile_view.dart';

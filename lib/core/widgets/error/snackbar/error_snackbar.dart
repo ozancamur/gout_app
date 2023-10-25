@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+
+import '../../../constant/color/color_constants.dart';
 
 SnackbarController errorSnackbar(String title, String message) {
   return Get.snackbar(

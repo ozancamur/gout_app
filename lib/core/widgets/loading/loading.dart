@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 
 class LoadingWidget extends StatelessWidget {
   const LoadingWidget({

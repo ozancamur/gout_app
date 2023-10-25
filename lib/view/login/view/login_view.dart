@@ -1,8 +1,8 @@
 // ignore_for_file: camel_case_types, must_be_immutable, deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
-import 'package:gout_app/core/services/constant/string/string_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/string/string_constants.dart';
 import 'package:gout_app/core/widgets/button/gout_button.dart';
 import 'package:gout_app/view/login/viewmodel/login_view_model.dart';
 

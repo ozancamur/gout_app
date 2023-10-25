@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/services/firebase/firebase_auth_controller.dart';
-import 'package:gout_app/core/services/random_nick/random_nick.dart';
+import 'package:gout_app/core/random_nick/random_nick.dart';
 import 'package:gout_app/view/login/view/login_view.dart';
 
 import '../../../core/widgets/error/snackbar/error_snackbar.dart';

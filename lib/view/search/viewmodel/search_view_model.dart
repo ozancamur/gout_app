@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/enum/firebase_enum.dart';
 import 'package:gout_app/core/widgets/error/snackbar/error_snackbar.dart';
 import 'package:gout_app/view/search/model/search_event_model.dart';
@@ -45,6 +45,8 @@ class SearchViewModel extends GetxController {
 
   RxList<SearchUserModel> userList =
       List<SearchUserModel>.empty(growable: true).obs;
+  
+  List<String> createrFriends = <String>[].obs;
 
   List<SearchEventCreaterModel> createrList = <SearchEventCreaterModel>[].obs;
 
@@ -70,6 +72,7 @@ class SearchViewModel extends GetxController {
                 date: doc["date"],
                 eventDescription: doc["eventDescription"],
                 eventTitle: doc["eventTitle"],
+                arrivals: doc["arrivals"]
               ),
             );
           }
@@ -128,5 +131,16 @@ class SearchViewModel extends GetxController {
       errorSnackbar("HomeViewModel_getEvents_ERROR: ", "$e");
     }
     isLoading.value = false;
+  }
+
+  void getCreaterFriends(String id) async {
+    try {
+      DocumentSnapshot creater =
+          await FirebaseCollectionsEnum.user.col.doc(id).get();
+      createrFriends = creater["followes"];
+      update();
+    } catch (e) {
+      errorSnackbar("HomeViewModel_getEvents_ERROR: ", "$e");
+    }
   }
 }

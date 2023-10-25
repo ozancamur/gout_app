@@ -3,7 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
+import 'package:gout_app/core/widgets/add_friend_card/add_friend_card.dart';
 import 'package:gout_app/core/widgets/appBar/gout_appbar.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
 import 'package:gout_app/core/widgets/button/gout_button.dart';
@@ -251,5 +252,59 @@ class CreateView extends StatelessWidget {
             ],
           ),
         ));
+  }
+
+    chooseFriends(List friends) async {
+    Get.dialog(
+      Center(
+        child: Container(
+          width: Get.width * .6,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: ColorConstants.goutMainDarkColor,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: ListView.builder(
+                  itemCount: friends.length,
+                  shrinkWrap: true,
+                  itemBuilder: (ctx, index) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        FriendCard(
+                          nickname: friends[index].nickname!,
+                          name: friends[index].name!,
+                          id: friends[index].id!,
+                          photoURL: friends[index].photoURL,
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (controller.invitedList.contains(friends[index].id)) {
+                              Get.showSnackbar(const GetSnackBar(
+                                message: "you invited this friend",
+                              ));
+                            } else {
+                              controller.invitedList.add(friends[index].id);
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.add,
+                            size: 20,
+                            color: ColorConstants.goutWhite,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

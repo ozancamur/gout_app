@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/appBar/gout_appbar.dart';
 import 'package:gout_app/view/friend/profile/view/friend_profile_view.dart';
 import 'package:gout_app/view/friend/request/viewmodel/request_view_model.dart';

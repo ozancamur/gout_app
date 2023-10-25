@@ -7,12 +7,14 @@ class ProfileEventModel {
   String eventDescription;
   Timestamp date;
   String createrId;
+  List arrivals;
   ProfileEventModel({
     required this.id,
     required this.eventTitle,
     required this.eventDescription,
     required this.date,
-    required this.createrId
+    required this.createrId,
+    required this.arrivals
   });
   
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
+
 
 Padding goutButton(List<Color> colors, String buttonText, Function() onPressed,) {
   return Padding(

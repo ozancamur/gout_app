@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/view/detail/view/detail_view.dart';
 
 class EventCard extends StatelessWidget {
@@ -12,7 +12,9 @@ class EventCard extends StatelessWidget {
     required this.nickname,
     required this.eventId,
     required this.createrName,
-    required this.createrId
+    required this.createrId,
+    required this.arrivals,
+    required this.friends
   });
 
   final String month;
@@ -22,11 +24,13 @@ class EventCard extends StatelessWidget {
   final String eventId;
   final String createrName;
   final String createrId;
+  final List arrivals;
+  final List friends;
 
 
   @override
   Widget build(BuildContext context) {
-
+    
     String title;
     if(eventTitle.length > 38) {
       title = "${eventTitle.substring(0,30)}...";
@@ -113,7 +117,12 @@ class EventCard extends StatelessWidget {
               ),
               onPressed: () { 
 
-                Get.to( () => DetailView(eventId: eventId,createrName: createrName, createrId: createrId,));
+                Get.to( () => DetailView(
+                  eventId: eventId,
+                  createrName: createrName, 
+                  createrId: createrId,
+                  arrivals: arrivals,
+                  friends: friends,));
               },
             ),
           ],

@@ -8,6 +8,7 @@ class SearchEventModel {
   Timestamp date;
   String eventDescription;
   String eventTitle;
+  List arrivals;
   SearchEventModel({
     required this.id,
     required this.createdOnDate,
@@ -15,6 +16,7 @@ class SearchEventModel {
     required this.date,
     required this.eventDescription,
     required this.eventTitle,
+    required this.arrivals
   });
 
 }

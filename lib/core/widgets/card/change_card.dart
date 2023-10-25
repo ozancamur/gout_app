@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 
-changeEvent(String title, String whichField, TextInputType keybordType, TextEditingController textEditingController, Function() onTap) {
-   Get.defaultDialog(
+
+PopupMenuItem changeEvent(String title, String whichField, TextInputType keybordType, TextEditingController textEditingController, Function() onTap) {
+  return PopupMenuItem(
+        onTap: () {
+          Get.defaultDialog(
             backgroundColor: ColorConstants.backgrounColor,
             title: title,
             titleStyle: const TextStyle(color: ColorConstants.goutWhite),
@@ -14,9 +17,14 @@ changeEvent(String title, String whichField, TextInputType keybordType, TextEdit
             content: Column(
               children: [_dialogTextField(whichField,textEditingController, keybordType), _dialogButtonField(onTap)],
             ));
+        },
+        child: Text(
+          title,
+          style: const TextStyle(color: ColorConstants.goutWhite),
+        ));  
 }
 
-InkWell changeCard(String title, String whichField, TextInputType keybordType, IconData icon, TextEditingController textEditingController, Function() onTap) {
+changeCard(String title, String whichField, TextInputType keybordType, IconData icon, TextEditingController textEditingController, Function() onTap) {
   return InkWell(
       onTap: () {
         Get.defaultDialog(
@@ -102,28 +110,24 @@ Widget _dialogTextField(String field, TextEditingController textEditingControlle
     );
   }
 
-  Widget _dialogButtonField(Function() onTap) {
+Widget _dialogButtonField(Function() onPressed) {
     return Padding(
       padding: EdgeInsets.symmetric(
           vertical: Get.height * .01, horizontal: Get.width * .04),
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          width: Get.width * .35,
-          height: Get.height * .05,
-          decoration: BoxDecoration(
-              border:
-                  Border.all(width: .75, color: ColorConstants.backgrounColor),
-              borderRadius: BorderRadius.circular(20),
-              gradient: const LinearGradient(colors: [
-                ColorConstants.goutSecondColor,
-                ColorConstants.goutThirdColor
-              ], begin: Alignment.centerLeft, end: Alignment.centerRight)),
-          child: const Center(
-            child: Text(
-              "change",
-              style: TextStyle(color: ColorConstants.white, fontSize: 16),
+      child: Container(
+        width: Get.width * .35,
+        height: Get.height * .05,
+        decoration: BoxDecoration(
+            border:
+                Border.all(width: .75, color: ColorConstants.backgrounColor),
+            borderRadius: BorderRadius.circular(20),
+            color: ColorConstants.goutWhite
             ),
+        child: TextButton(
+          onPressed: onPressed,
+          child: const Text(
+            "change",
+            style: TextStyle(color: ColorConstants.black, fontSize: 16),
           ),
         ),
       ),

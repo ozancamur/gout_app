@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable, unrelated_type_equality_checks
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/eventCard/event_card.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
 import 'package:gout_app/view/home/viewmodel/home_view_model.dart';
@@ -116,10 +116,12 @@ class HomeView extends StatelessWidget {
                     nickname: "ozancamur",
                     eventId: "Ozan Camur",
                     createrName: "createrName",
-                    createrId: "createrId",),
+                    createrId: "createrId",
+                    arrivals: [],
+                    friends: [],),
                 itemBuilder: (context, index) {
                   if (controller.eventsList != 0) {
-                    controller.getCreaterNickname(
+                    controller.getCreaterInfo(
                         controller.eventsList[index].createrId);
                   }
                   DateTime date = controller.eventsList[index].date.toDate();
@@ -136,6 +138,8 @@ class HomeView extends StatelessWidget {
                           eventId: controller.eventsList[index].id,
                           createrName: controller.name[index],
                           createrId: controller.eventsList[index].createrId,
+                          arrivals: controller.eventsList[index].arrivals,
+                          friends: controller.createrFriends
                         );
                 },
               ),

@@ -59,7 +59,8 @@ class ProfileViewModel extends GetxController {
                 eventTitle: event["eventTitle"],
                 eventDescription: event["eventDescription"],
                 date: event["date"],
-                createrId: event["createrId"]
+                createrId: event["createrId"],
+                arrivals: event["arrivals"]
               ),
             );
           }

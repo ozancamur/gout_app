@@ -10,6 +10,7 @@ class FirebaseFirestoreController extends GetxController {
   CollectionReference event = FirebaseCollectionsEnum.event.col;
   final box = GetStorage();
 
+  // ! CREATE METHODS
   Future<void> createAnUser(
       String name, String email, String password, String nickname) async {
     try {
@@ -74,18 +75,7 @@ class FirebaseFirestoreController extends GetxController {
     await event.doc(eventID).collection("moment").add(momentInfo);
   }
 
-  Future<void> changeNickName(String nickname) async {
-    try {
-      await user.doc(box.read("userUID")).update({"nickname": nickname});
-      Get.showSnackbar(const GetSnackBar(
-        message: "Changes Saved!",
-        snackPosition: SnackPosition.TOP,
-      ));
-    } catch (e) {
-      errorSnackbar("FirebaseFirestoreController, editNickNameERROR: ", "$e");
-    }
-  }
-
+  // ! FRIEND METHODS
   Future<void> followTheUser(String id) async {
     try {
       await user.doc(id).update({
@@ -128,6 +118,19 @@ class FirebaseFirestoreController extends GetxController {
     );
   }
 
+  // ! USER INFO CHANGES
+  Future<void> changeNickName(String nickname) async {
+    try {
+      await user.doc(box.read("userUID")).update({"nickname": nickname});
+      Get.showSnackbar(const GetSnackBar(
+        message: "Changes Saved!",
+        snackPosition: SnackPosition.TOP,
+      ));
+    } catch (e) {
+      errorSnackbar("FirebaseFirestoreController, editNickNameERROR: ", "$e");
+    }
+  }
+
   Future<void> changeEmail(String email) async {
     try {
       await user.doc(box.read("userUID")).update({"email": email});
@@ -144,6 +147,11 @@ class FirebaseFirestoreController extends GetxController {
     }
   }
 
+  Future<void> uploadUserProfilePhoto(String imagePath) async {
+    user.doc(box.read("userUID")).update({"photoURL": imagePath});
+  }
+
+  // ! EVENT METHODS
   Future<void> acceptEventRequest(String id) async {
     await event.doc(id).update({
       "arrivals": FieldValue.arrayUnion([box.read("userUID")]),
@@ -175,36 +183,44 @@ class FirebaseFirestoreController extends GetxController {
     });
   }
 
-  Future<void> uploadUserProfilePhoto(String imagePath) async {
-    user.doc(box.read("userUID")).update({"photoURL": imagePath});
-  }
-
-  Future<void> permissionAllowed() async {
-    user.doc(box.read("userUID")).update({
-      "token": box.read("fcmToken")
-    });
-  }
-
   Future<void> changeEventTitle(String id, String newTitle) async {
-    try{
-      event.doc(id).update({
-      "eventTitle": newTitle
-    });
+    try {
+      event.doc(id).update({"eventTitle": newTitle});
     } catch (e) {
       errorSnackbar("ERROR", "$e");
     }
   }
 
   Future<void> changeEventDescription(String id, String newDescription) async {
-    try{
-      event.doc(id).update({
-      "eventDescription": newDescription 
-    });
+    try {
+      event.doc(id).update({"FIRESTORE, eventDescription": newDescription});
     } catch (e) {
       errorSnackbar("ERROR", "$e");
     }
   }
 
+  Future<void> removeInvite(String id, String userId) async {
+    try {
+      event.doc(id).update({
+        "invited": FieldValue.arrayRemove([userId])
+      });
+    } catch (e) {
+      errorSnackbar("FIRESTORE, removeInvite", "$e");
+    }
+  }
 
+  Future<void> updateInvite(String id, String userId) async {
+    try {
+      event.doc(id).update({
+        "invited": FieldValue.arrayUnion([userId])
+      });
+    } catch (e) {
+      errorSnackbar("FIRESTORE, updateInvite", "$e");
+    }
+  }
 
+  // ! NOTIFICATION
+  Future<void> permissionAllowed() async {
+    user.doc(box.read("userUID")).update({"token": box.read("fcmToken")});
+  }
 }

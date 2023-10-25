@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
 import 'package:gout_app/core/widgets/eventCard/event_card.dart';
 import 'package:gout_app/view/friend/request/view/request_view.dart';
@@ -326,7 +326,9 @@ class ProfileView extends StatelessWidget {
                         nickname: "ozancamur",
                         eventId: "ozancamur10062000",
                         createrName: "Ozan Camur",
-                        createrId: "createrId",),
+                        createrId: "createrId",
+                        arrivals: [],
+                        friends: [],),
                     itemBuilder: (context, index) {
                       DateTime date =
                           controller.userEventList[index].date.toDate();
@@ -343,6 +345,8 @@ class ProfileView extends StatelessWidget {
                         eventId: controller.userEventList[index].id,
                         createrName: controller.profileUserModel.value.name,
                         createrId: controller.userEventList[index].createrId,
+                        arrivals: controller.userEventList[index].arrivals,
+                        friends: controller.profileUserModel.value.followers,
                       );
                     },
                   ),

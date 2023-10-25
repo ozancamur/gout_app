@@ -2,16 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/appBar/gout_appbar.dart';
 import 'package:gout_app/view/friend/friends/viewmodel/friends_view_model.dart';
 import 'package:gout_app/view/friend/profile/view/friend_profile_view.dart';
-import 'package:gout_app/view/proile/viewmodel/profile_view_model.dart';
 
 class FriendsView extends StatelessWidget {
   FriendsView({super.key, required this.list});
   List list;
-  final profileController = Get.put(ProfileViewModel());
+  
   final controller = Get.put(FriendsViewModel());
 
   @override

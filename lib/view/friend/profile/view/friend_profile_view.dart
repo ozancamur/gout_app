@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
 import 'package:gout_app/core/widgets/eventCard/event_card.dart';
 import 'package:gout_app/view/friend/profile/viewmodel/friend_profile_view_model.dart';
@@ -69,6 +69,8 @@ class FriendProfileView extends StatelessWidget {
               eventId: controller.userEvents[index].id,
               createrName: controller.user.value.name,
               createrId: controller.userEvents[index].createrId,
+              arrivals: controller.userEvents[index].arrivals,
+              friends: controller.user.value.followers
             );
           },
         ),

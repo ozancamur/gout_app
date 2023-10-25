@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/services/firebase/firebase_firestore.dart';
 import 'package:gout_app/view/friend/profile/view/friend_profile_view.dart';
 
@@ -43,11 +43,11 @@ class FriendCard extends StatelessWidget {
               children: [
                 Text(
                   nickname,
-                  style: const TextStyle(color: ColorConstants.white, fontSize: 16),
+                  style: const TextStyle(color: ColorConstants.white, fontSize: 16, decoration: TextDecoration.none),
                 ),
                 Text(
                   name,
-                  style: const TextStyle(color: ColorConstants.goutWhite, fontSize: 12),
+                  style: const TextStyle(color: ColorConstants.goutWhite, fontSize: 13, decoration: TextDecoration.none),
                 ),
               ],
             )

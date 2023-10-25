@@ -1,32 +1,39 @@
-// ignore_for_file: must_be_immutable, unnecessary_null_comparison
+// ignore_for_file: must_be_immutable, unnecessary_null_comparison, iterable_contains_unrelated_type
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/add_friend_card/add_friend_card.dart';
 import 'package:gout_app/core/widgets/card/change_card.dart';
 import 'package:gout_app/view/detail/viewmodel/detail_view_model.dart';
 
 class DetailView extends StatelessWidget {
   DetailView(
-      {super.key,
+      {Key? key,
       required this.eventId,
       required this.createrName,
-      required this.createrId});
+      required this.createrId,
+      required this.arrivals,
+      required this.friends})
+      : super(key: key);
   String eventId;
   String createrName;
   String createrId;
+  List arrivals;
+  List friends;
 
   final controller = Get.put(DetailViewModel());
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<DetailViewModel>(
-      init: DetailViewModel(),
-      initState: (_) {},
-      builder: (controller) {
+      initState: (state) {
         controller.getEventsDetail(eventId);
-        controller.getEventArrivals(
-            eventId, controller.detailModel.value.arrivals);
+      },
+      init: DetailViewModel(),
+      builder: (controller) {
+        controller.getEventArrivals(controller.detailModel.value.arrivals);
+        controller.getEventInviteds(controller.detailModel.value.invited);
+        controller.getFriend();
         controller.checkUserForEvent(
             controller.detailModel.value.arrivals,
             controller.detailModel.value.invited,
@@ -34,34 +41,74 @@ class DetailView extends StatelessWidget {
             controller.detailModel.value.createdOnDate);
         controller.getEventMoments(eventId);
         return SafeArea(
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: AppBar(
-              centerTitle: true,
-              shadowColor: ColorConstants.goutWhite,
+          child: Obx(
+            () => Scaffold(
+              resizeToAvoidBottomInset: false,
               backgroundColor: ColorConstants.black,
-              leading: IconButton(
-                onPressed: () => Get.back(),
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: ColorConstants.white,
-                  size: 20,
-                ),
-              ),
-              title: const Text(
-                "Event",
-                style: TextStyle(color: ColorConstants.goutWhite, fontSize: 25),
-              ),
+              appBar: _appBarField(controller),
+              body: _bodyField(controller),
             ),
-            backgroundColor: ColorConstants.black,
-            body: _bodyField(controller),
           ),
         );
       },
     );
   }
 
-  Padding _bodyField(DetailViewModel controller) {
+  AppBar _appBarField(DetailViewModel controller) {
+    return AppBar(
+      centerTitle: true,
+      backgroundColor: ColorConstants.black,
+      foregroundColor: ColorConstants.goutWhite,
+      title: const Text(
+        "Event",
+        style: TextStyle(color: ColorConstants.white, fontSize: 25),
+      ),
+      actions: [
+        createrId == controller.box.read("userUID")
+            ? PopupMenuButton(
+                icon: const Icon(
+                  Icons.menu,
+                  size: 20,
+                  color: ColorConstants.goutWhite,
+                ),
+                color: ColorConstants.backgrounColor,
+                itemBuilder: (BuildContext context) => [
+                  changeEvent(
+                    "change Event Title",
+                    "event title",
+                    TextInputType.text,
+                    controller.tecEventTitle,
+                    () => controller.changeEventTitle(
+                      eventId,
+                      controller.tecEventTitle.text,
+                    ),
+                  ),
+                  changeEvent(
+                    "change Event Description",
+                    "event description",
+                    TextInputType.text,
+                    controller.tecEventDescription,
+                    () => controller.changeEventDescription(
+                      eventId,
+                      controller.tecEventDescription.text,
+                    ),
+                  ),
+                  PopupMenuItem(
+                      onTap: () {
+                        chooseFriends();
+                      },
+                      child: const Text(
+                        "change Inviteds",
+                        style: TextStyle(color: ColorConstants.goutWhite),
+                      ))
+                ],
+              )
+            : const SizedBox()
+      ],
+    );
+  }
+
+  Widget _bodyField(DetailViewModel controller) {
     return Padding(
       padding: EdgeInsets.only(
           left: Get.width * .05, right: Get.width * .05, top: Get.height * .02),
@@ -133,11 +180,14 @@ class DetailView extends StatelessWidget {
                       ],
                     ),
                     Flexible(
-                      child: Text(
-                          controller.detailModel.value.eventDescription
-                              .toLowerCase(),
-                          style: const TextStyle(
-                              color: ColorConstants.goutWhite, fontSize: 16)),
+                      child: SizedBox(
+                        height: Get.height * .05,
+                        child: Text(
+                            controller.detailModel.value.eventDescription
+                                .toLowerCase(),
+                            style: const TextStyle(
+                                color: ColorConstants.goutWhite, fontSize: 16)),
+                      ),
                     ),
                   ],
                 ),
@@ -240,8 +290,6 @@ class DetailView extends StatelessWidget {
               () => controller.down.value = true,
               secondIcon: Icons.keyboard_arrow_down,
               color: ColorConstants.goutPurple),
-
-              
         ],
       ),
     );
@@ -601,6 +649,163 @@ class DetailView extends StatelessWidget {
                 ],
               ),
             )),
+      ),
+    );
+  }
+
+  chooseFriends() async {
+    Get.dialog(
+      Center(
+        child: Container(
+          width: Get.width * .8,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: ColorConstants.backgrounColor,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _changeInvitedsTitleField("Inviteds"),
+              Flexible(
+                child: ListView.builder(
+                  itemCount: controller.detailModel.value.invited.length,
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, index) {
+                    var refreshKeyInviteds = GlobalKey<RefreshIndicatorState>();
+                    return controller.friendList.isEmpty
+                        ? RefreshIndicator(
+                            child: const Text("No İnvited"),
+                            onRefresh: () async {
+                              await controller.getEventInviteds(
+                                  controller.detailModel.value.invited);
+                            },
+                          )
+                        : RefreshIndicator(
+                            key: refreshKeyInviteds,
+                            onRefresh: () async {
+                              await controller.getEventInviteds(
+                                  controller.detailModel.value.invited);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                FriendCard(
+                                  nickname:
+                                      "${controller.invitedList[index].nickname}",
+                                  name: "${controller.invitedList[index].name}",
+                                  id: "${controller.invitedList[index].id}",
+                                  photoURL:
+                                      controller.invitedList[index].photoURL,
+                                ),
+                                _inviteIconButtonField(
+                                    () => controller.removeInvite(eventId,
+                                        controller.invitedList[index].id!),
+                                    Icons.remove,
+                                    ColorConstants.goutRed)
+                              ],
+                            ),
+                          );
+                  },
+                ),
+              ),
+              const Text(
+                "         .",
+                style: TextStyle(
+                  color: ColorConstants.backgrounColor,
+                  decoration: TextDecoration.lineThrough,
+                  decorationColor: ColorConstants.goutWhite,
+                  decorationStyle: TextDecorationStyle.solid,
+                  decorationThickness: .75 
+                  ),
+              ),
+              _changeInvitedsTitleField("Friends"),
+              
+              Flexible(
+                child: ListView.builder(
+                  itemCount: friends.length,
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, index) {
+                    var refreshKeyFriends = GlobalKey<RefreshIndicatorState>();
+                    return controller.friendList.isEmpty
+                        ? RefreshIndicator(
+                            child: const Text("No Friends"),
+                            onRefresh: () async {
+                              await controller.getFriend();
+                            },
+                          )
+                        : RefreshIndicator(
+                            key: refreshKeyFriends,
+                            onRefresh: () async {
+                              await controller.getFriend();
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                FriendCard(
+                                  nickname:
+                                      "${controller.friendList[index].nickname}",
+                                  name: "${controller.friendList[index].name}",
+                                  id: "${controller.friendList[index].id}",
+                                  photoURL:
+                                      controller.friendList[index].photoURL,
+                                ),
+                                controller.detailModel.value.invited.contains(
+                                        controller.friendList[index].id)
+                                    ? _inviteIconButtonField(
+                                        () =>
+                                            Get.showSnackbar(const GetSnackBar(
+                                          message: "this user invited",
+                                        )),
+                                        Icons.add,
+                                        ColorConstants.grey,
+                                      )
+                                    : _inviteIconButtonField(() {
+                                        controller.updateInvite(eventId,
+                                            controller.friendList[index].id!);
+                                        Get.back();
+                                      }, Icons.add, ColorConstants.goutGreen)
+                              ],
+                            ),
+                          );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  IconButton _inviteIconButtonField(
+      Function() onPressed, IconData icon, Color color) {
+    return IconButton(
+      onPressed: onPressed,
+      icon: Icon(
+        icon,
+        size: 25,
+        color: color,
+      ),
+    );
+  }
+
+  Text _changeInvitedsTitleField(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+          fontSize: 35,
+          color: ColorConstants.goutPurple,
+          decoration: TextDecoration.none,
+          height: 1.5),
+    );
+  }
+
+  buildCenterLoading() {
+    return const Center(
+      child: CircularProgressIndicator.adaptive(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+        backgroundColor: Colors.grey,
       ),
     );
   }

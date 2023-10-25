@@ -7,7 +7,8 @@ class HomeModel {
     required this.date,
     required this.eventDescription,
     required this.eventTitle,
-    required this.id
+    required this.id,
+    required this.arrivals
   });
   String id;
   Timestamp createdOnDate;
@@ -15,5 +16,6 @@ class HomeModel {
   Timestamp date;
   String eventDescription;
   String eventTitle;
+  List arrivals;
   
 }

@@ -1,7 +1,7 @@
 // ignore_for_file: unrelated_type_equality_checks
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gout_app/core/services/constant/color/color_constants.dart';
+import 'package:gout_app/core/constant/color/color_constants.dart';
 import 'package:gout_app/core/widgets/add_friend_card/add_friend_card.dart';
 import 'package:gout_app/core/widgets/bottomNavigatorBar/gout_bottom.dart';
 import 'package:gout_app/core/widgets/eventCard/event_card.dart';
@@ -99,7 +99,9 @@ class SearchView extends StatelessWidget {
                       nickname: "ozancamur",
                       eventId: "eventid",
                       createrName: "Ozan Camur",
-                      createrId: "createrId",),
+                      createrId: "createrId",
+                      arrivals: [],
+                      friends: [],),
                   itemBuilder: (context, index) {
                     if (controller.eventList != 0) {
                       controller.getCreaterNickname(
@@ -118,6 +120,8 @@ class SearchView extends StatelessWidget {
                             eventId: controller.eventList[index].id,
                             createrName: "",
                             createrId: "",
+                            arrivals: const [],
+                            friends: const [],
                           )
                         : EventCard(
                             month: month,
@@ -127,6 +131,8 @@ class SearchView extends StatelessWidget {
                             eventId: controller.eventList[index].id,
                             createrName: controller.createrList[index].name,
                             createrId: controller.eventList[index].createrId,
+                            arrivals: controller.eventList[index].arrivals,
+                            friends: controller.createrFriends,
                           );
                   },
                 ),
